@@ -1,0 +1,107 @@
+{% extends 'main/base.html' %} {% block title %}หน้าแรก{% endblock %} {% block content-head %}
+{% load static %}
+<div class="row">
+  <img
+    src="https://raw.githubusercontent.com/MPR2014v8/PlanTripFinal/main/static/media/images/homepage.png"
+    id="homepic"
+    style="
+      height: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    "
+  />
+</div>
+
+<div class="d-flex flex-row m-5 justify-content-around row border-bottom" id="about-website">
+  <div class="d-flex flex-column col-4">
+    <div class="card flex-fill" style="width: 25rem">
+      <img
+        src="https://github.com/MPR2014v8/PlanTripFinal/blob/main/static/media/images/traveler.jpg?raw=true"
+        class="card-img-top"
+        alt="..."
+      />
+      <div class="card-body">
+        <h4 class="card-title">นักท่องเที่ยว</h4>
+        <p class="card-text">
+          ได้เปิดประสบการณ์การการท่องเที่ยวใหม่ๆ ตลอดทุกการเดินทาง
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex flex-column col-4">
+    <div class="card flex-fill" style="width: 25rem">
+      <img
+        src="https://github.com/MPR2014v8/PlanTripFinal/blob/main/static/media/images/business.jpg?raw=true"
+        class="card-img-top"
+        alt="..."
+      />
+      <div class="card-body">
+        <h4 class="card-title">ผู้ประกอบการ</h4>
+        <p class="card-text">
+          ได้โปรโมทกิจการของตัวเองและสามารถเข้าถึงนักท่องเที่ยวใหม่ๆได้มากขึ้น
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex flex-column col-4">
+    <div class="card flex-fill" style="width: 25rem">
+      <img
+        src="https://github.com/MPR2014v8/PlanTripFinal/blob/main/static/media/images/village.jpg?raw=true"
+        class="card-img-top"
+        alt="..."
+      />
+      <div class="card-body">
+        <h4 class="card-title">ชุมชน</h4>
+        <p class="card-text">
+          ได้รับการช่วยกระตุ้นเศรษฐกิจ
+          เมื่อมีนักท่องเที่ยวสังคมและชุมชนก็พอมีรายได้เลี้ยงตัวเอง
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex pl-5 pb-5">
+  <div class="p-2">
+    <button class="btn btn-outline-success flex-shrink-0 btn bg-sucess btn-sm" type="button">
+      <i class="bi bi-phone me-1"></i>
+      โหลดแอพพิเคชั่น
+    </button>
+  </div>
+
+  <div class="p-2">
+    <button class="btn btn-outline-primary flex-shrink-0 btn btn-sm" type="button">
+        <i class="bi bi-compass me-1"></i>
+      สมัครใช้บริการสำหรับนักท่องเที่ยว
+    </button>
+  </div>
+
+  <div class="p-2">
+    <button class="btn btn-outline-danger flex-shrink-0 btn btn-sm" type="button">
+        <i class="bi bi-building me-1"></i>
+      สมัครใช้บริการสำหรับผู้ประกอบการ
+    </button>
+  </div>
+</div>
+
+<!-- About Content -->
+<div class="container-fluid pb-5 pl-5">
+  <div class="row">
+      <div class="col-lg-6">
+          <img src="https://raw.githubusercontent.com/MPR2014v8/PlanTripFinal/main/static/media/images/homepage.png" class="img-fluid" alt="About Us">
+      </div>
+      <div class="col-lg-6">
+          <h2 class="mb-4">เกี่ยวกับเรา</h2>
+          <p>เว็บไชต์นี้ถูกพัตนาขึ้นมาเพิ่อใช้ในรายวิชาโครงงาน</p>
+          <p>พัตนาขึ้นมาโดย</p>
+          <p>นายวชิระ ทองเลิศ 64040249107</p>
+          <p>นางสาวธนัชภร์ณ์ อาจกมล 63040249113</p>
+          <p>คณะวิทยาศาสตร์ สาขาวิทยาการคอมพิวเตอร์ มหาลัยราชภัฏอุดรธานี</p>
+          <br>
+          <p>อีเมลสำหรับติดต่อ : 64040249107@udru.ac.th</p>
+      </div>
+  </div>
+</div>
+
+{% endblock %}

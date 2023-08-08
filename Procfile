@@ -1,0 +1,1 @@
+web: gunicorn plantrip_filnal.wsgi

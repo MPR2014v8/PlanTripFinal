@@ -1,0 +1,19 @@
+{% extends 'base.html' %} {% block title %}หน้าแรก{% endblock %} 
+{% block content %}
+
+<br>
+<h1>Business Person | หน้าแรก</h1>
+<br>
+<hr>
+<br>
+<div class="font-weight-bold">
+    <a href="{% url 'business:businessPlaceView' %}"><span>จัดการกิจการ</span></a>
+</div>
+<div class="font-weight-bold">
+    <a href="{% url 'business:businessPlacePicView' %}"><span>จัดการรูปภาพกิจการ</span></a>
+</div>
+<div class="font-weight-bold">
+    <a href="{% url 'business:businessPlacePaymentView' %}"><span>จัดการค่าบริการ</span></a>
+</div>
+
+{% endblock %}

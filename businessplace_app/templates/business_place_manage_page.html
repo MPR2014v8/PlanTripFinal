@@ -1,0 +1,16 @@
+{% extends 'base.html' %} {% block title %}หน้าแรก{% endblock %} 
+{% block content %}
+
+<br>
+<h1>Business Person | จัดการกิจการ</h1>
+<br>
+<hr>
+<br>
+<div class="font-weight-bold">
+    <a href="{% url 'admin:index' %}"><span>เพิ่มกิจการ</span></a>
+  </div>
+<div class="font-weight-bold">
+    <a href="{% url 'admin:index' %}"><span>แก้ไขกิจการ</span></a>
+</div>
+
+{% endblock %}

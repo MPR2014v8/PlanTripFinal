@@ -1,0 +1,50 @@
+{% extends 'main/base.html' %} {% block title %}สถานที่{% endblock %} 
+{% block content %}
+<h1 class="mt-5 mb-5">สถานที่ทั้งหมด</h1>
+<div class="row justify-content-center">
+  {% for x in pictures %}
+  <div class="col-sm-4" style="width: 18rem">
+    <div class="card">
+      {% load static %}
+      <img
+        class="card-img-top"
+        src="{{ x.image.url }}"
+        alt="Card image cap"
+        style="width: 100%; height: 18vw; object-fit: cover"
+      />
+      <div class="card-body">
+        <h5
+          class="card-title"
+          style="
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* number of lines to show */
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+          "
+        >
+          {{ x.place.name}}
+        </h5>
+        <p
+          class="card-text"
+          style="
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* number of lines to show */
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+          "
+        >
+          {{ x.place.description }}
+        </p>
+        <a href="{% url 'place_detail' id=x.place.id %}" class="btn btn-primary">ดูรายละเอียด</a>
+      </div>
+    </div>
+    <br />
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

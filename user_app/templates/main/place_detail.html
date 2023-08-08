@@ -1,0 +1,72 @@
+{% extends 'main/base.html' %} {% block title %}รายละเอียดสถานที่{% endblock %} 
+{% block content %}
+<section class="fdb-block py-0">
+    <div class="container" style="background-color: rgb(237, 237, 237)">
+      <div class="row justify-content-center py-5">
+        <div class="col-12 col-md-10 col-lg-8 text-center">
+          <div class="fdb-box">
+            <div id="gallery-slides" class="carousel slide" data-ride="carousel">
+              <ol class="carousel-indicators">
+                <li data-target="#gallery-slides" data-slide-to="0" class="active"></li>
+                {% for x in pic_gallery %}
+                <li data-target="#gallery-slides" data-slide-to="{{ forloop.couter }}"></li>
+                {% endfor %}
+              </ol>
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <a href="{{ pic_main.image.url }}">
+                    <img
+                      class="d-block w-100 h-50 fit-image"
+                      src="{{ pic_main.image.url }}"
+                    />
+                  </a>
+                </div>
+                {% for x in pic_gallery %}
+                <div class="carousel-item">
+                  <a href="{{ x.image.url }}">
+                    <img
+                      class="d-block w-100 h-50 fit-image"
+                      src="{{ x.image.url }}"
+                    />
+                  </a>
+                </div>
+                {% endfor %}
+              </div>
+              <a
+                class="carousel-control-prev"
+                href="#gallery-slides"
+                role="button"
+                data-slide="prev"
+              >
+                <span
+                  class="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a
+                class="carousel-control-next"
+                href="#gallery-slides"
+                role="button"
+                data-slide="next"
+              >
+                <span
+                  class="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="sr-only">Next</span>
+              </a>
+            </div>
+  
+            <br />
+            <h1 class="p-4">{{ place.name }}</h1>
+            <p class="lead">{{ place.description }}</p>
+            <p class="mt-4">
+              <a class="btn btn-primary" href="{{ mediaVR.link }}">Virtual Reality</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
