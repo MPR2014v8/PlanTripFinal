@@ -24,6 +24,7 @@ class Trip(models.Model):
 class TripDetail(models.Model):
     place = models.ForeignKey(BusinessPlace, on_delete=models.CASCADE, related_name="places")
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name="trip")
+    chkIn = models.BooleanField(default=False)
     
     created_datetime = models.DateTimeField(auto_now_add=True)
     change_datetime = models.DateTimeField(default=datetime.datetime.now())
