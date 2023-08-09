@@ -24,6 +24,13 @@ def business_place_pic_view(request):
 def business_place_payment_view(request):
     return render(request, '../templates/business_place_payment_manage.html', {})
 
+class BusinessPlaceUserViewAV(generics.ListAPIView):
+    serializer_class = BusinessPlaceSerializer
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        return BusinessPlace.objects.filter(place_user__username=username)
+
 class BusinessPlaceViewAV(APIView):
     
     def get(self, request):

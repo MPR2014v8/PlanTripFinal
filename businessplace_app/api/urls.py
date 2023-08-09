@@ -12,6 +12,7 @@ urlpatterns = [
     path('business/<int:id>/', BusinessPlaceDetailView.as_view(), name='businessDetailView'),
     
     path('business/place/', business_place_view, name='businessPlaceView'),
+    path('business/place-user/<str:username>/', BusinessPlaceUserViewAV.as_view(), name='businessPlaceUserView'),
     path('business/place/pictures/', business_place_pic_view,name='businessPlacePicView'),
     path('business/place/payment/', business_place_payment_view, name='businessPlacePaymentView'),
     
