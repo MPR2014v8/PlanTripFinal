@@ -10,6 +10,7 @@ from rest_framework import status
 from trip_app.api.serializers import TripSerializer, TripDetailSerializer
 
 from trip_app.models import Trip, TripDetail
+from django.contrib.auth.models import User, Group
 
 class TripViewAV(APIView):
     
@@ -98,3 +99,16 @@ class TripDetailPlacelViewAV(APIView):
         trip = TripDetail.objects.get(id=id)
         trip.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class TripUserViewAV(APIView):
+    
+    serializer_class = TripSerializer
+
+    def get(self, request, username):
+        try:
+            user = User.objects.get(username=username)
+            trip = Trip.objects.get(user=user.id)
+        except Trip.DoesNotExist :
+            return Response({'error': 'Trip User not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = TripSerializer(trip)
+        return Response(serializer.data)

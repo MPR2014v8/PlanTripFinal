@@ -103,48 +103,52 @@ class RatingAndCommentPlace(generics.ListAPIView):
     def get_queryset(self):
         id_place = self.kwargs['id_place']
         return RatingAndComment.objects.filter(place__id=id_place)
-    
-class checkInLocationPlaceViewAV(APIView):
-    
-    def get(self, request):
-        users = RatingAndComment.objects.all()
-        serializer = RatingAndCommentSerializer(users, many=True)
-        return Response(serializer.data)
-    
-    def post(self, request):
-        serializer = RatingAndCommentSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-class checkInLocationPlaceSearchView(generics.ListAPIView):
-    queryset = RatingAndComment.objects.all()
-    serializer_class = RatingAndCommentSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ['place__name']
-    
-class checkInLocationPlaceDetailView(APIView):
-    serializer_class = RatingAndCommentSerializer
 
-    def get(self, request, id):
-        try:
-            rac = RatingAndComment.objects.get(id=id)
-        except RatingAndComment.DoesNotExist :
-            return Response({'error': 'RatingAndComment not found'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = RatingAndCommentSerializer(rac)
-        return Response(serializer.data)
 
-    def put(self, request, id):
-        rac = RatingAndComment.objects.get(id=id)
-        serializer = RatingAndCommentSerializer(rac, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, id):
-        rac = RatingAndComment.objects.get(id=id)
-        rac.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# class checkInLocationPlaceViewAV(APIView):
+    
+#     def get(self, request):
+#         users = RatingAndComment.objects.all()
+#         serializer = RatingAndCommentSerializer(users, many=True)
+#         return Response(serializer.data)
+    
+#     def post(self, request):
+#         serializer = RatingAndCommentSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+# class checkInLocationPlaceSearchView(generics.ListAPIView):
+#     queryset = RatingAndComment.objects.all()
+#     serializer_class = RatingAndCommentSerializer
+#     filter_backends = [filters.SearchFilter]
+#     search_fields = ['place__name']
+    
+# class checkInLocationPlaceDetailView(APIView):
+#     serializer_class = RatingAndCommentSerializer
+
+#     def get(self, request, id):
+#         try:
+#             rac = RatingAndComment.objects.get(id=id)
+#         except RatingAndComment.DoesNotExist :
+#             return Response({'error': 'RatingAndComment not found'}, status=status.HTTP_404_NOT_FOUND)
+#         serializer = RatingAndCommentSerializer(rac)
+#         return Response(serializer.data)
+
+#     def put(self, request, id):
+#         rac = RatingAndComment.objects.get(id=id)
+#         serializer = RatingAndCommentSerializer(rac, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         else:
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def delete(self, request, id):
+#         rac = RatingAndComment.objects.get(id=id)
+#         rac.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,11 +1,5 @@
 from django.urls import path
-from businessplace_app.api.views import (
-    business_home_view, business_place_view, 
-    business_place_pic_view, business_place_payment_view, 
-    BusinessPlaceViewAV, BusinessPlaceDetailView, BusinessPlaceSearchView,
-    RatingAndCommentViewAV, RatingAndCommentSearchView, RatingAndCommentDetailView,
-    RatingAndCommentFilterPlaceUser, RatingAndCommentPlace, business_login_view
-)
+from businessplace_app.api.views import *
 
 app_name = 'business'
 
@@ -23,12 +17,14 @@ urlpatterns = [
     
     path('business/rac-all/', RatingAndCommentViewAV.as_view(), name='racView-all'),
     path('business/rac/', RatingAndCommentSearchView.as_view(), name='racView'),
+    
     path('business/rac/<int:id>/', RatingAndCommentDetailView.as_view(), name='racDetailView'),
+    
     path('business/rac/user=<int:id_user>,place=<int:id_place>/', RatingAndCommentFilterPlaceUser.as_view(), name='racUserPlaceView'),
     path('business/rac/place=<int:id_place>/', RatingAndCommentPlace.as_view(), name='racPlaceView'),
     
-    path('business/chkin-all/', RatingAndCommentViewAV.as_view(), name='chkinView-all'),
-    path('business/chkin/', RatingAndCommentSearchView.as_view(), name='chkinView'),
-    path('business/chkin/<int:id>/', RatingAndCommentDetailView.as_view(), name='chkinDetailView'),
+    # path('business/chkin-all/', RatingAndCommentViewAV.as_view(), name='chkinView-all'),
+    # path('business/chkin/', RatingAndCommentSearchView.as_view(), name='chkinView'),
+    # path('business/chkin/<int:id>/', RatingAndCommentDetailView.as_view(), name='chkinDetailView'),
     
 ]
