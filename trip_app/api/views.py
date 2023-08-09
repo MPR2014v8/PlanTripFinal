@@ -106,3 +106,11 @@ class TripUserViewAV(generics.ListAPIView):
     def get_queryset(self):
         username = self.kwargs['username']
         return Trip.objects.filter(user__username=username)
+    
+class TripUserIdViewAV(generics.ListAPIView):
+    
+    serializer_class = TripSerializer
+
+    def get_queryset(self):
+        id = self.kwargs['id']
+        return Trip.objects.filter(user_id=id)
