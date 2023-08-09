@@ -100,15 +100,9 @@ class TripDetailPlacelViewAV(APIView):
         trip.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
-class TripUserViewAV(APIView):
-    
+class TripUserViewAV(generics.ListAPIView):
     serializer_class = TripSerializer
 
-    def get(self, request, username):
-        try:
-            user = User.objects.get(username=username)
-            trip = Trip.objects.get(user=user.id)
-        except Trip.DoesNotExist :
-            return Response({'error': 'Trip User not found'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = TripSerializer(trip)
-        return Response(serializer.data)
+    def get_queryset(self):
+        username = self.kwargs['username']
+        return Trip.objects.filter(user__username=username)
