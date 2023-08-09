@@ -1,11 +1,7 @@
 from rest_framework.authtoken.views import obtain_auth_token
 from django.contrib import admin
 from django.urls import path
-from user_app.api.views import (
-    registration_view, logout_view, home_view,
-    UserViewAV, UserViewDetailAV, UserViewDetail,
-    about_us_view
-)
+from user_app.api.views import *
 
 app_name = 'user'
 
@@ -22,4 +18,5 @@ urlpatterns = [
     path('user/<str:username>/', UserViewDetail.as_view(), name='user-detail-view'),
     
     path('about_us/', about_us_view, name='about-us-view'),
+    path('chk_group_id/<str:username>/', ChkGroupID.as_view(), name='chkgroupid-view'),
 ]

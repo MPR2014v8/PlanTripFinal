@@ -9,11 +9,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from django.contrib.auth.models import User, Group
 
-from user_app.api.serializers import (
-    RegistrationSerializer, 
-    UserSerializer, 
-    UserAccountSerializer
-)
+from user_app.api.serializers import *
 
 def home_view(request):
     return render(request, '../templates/main/home.html', {})
@@ -21,6 +17,14 @@ def home_view(request):
 def about_us_view(request):
     
     return render(request, '../templates/main/about_us_page.html', {})
+
+class ChkGroupID(generics.ListAPIView):
+    
+    serializer_class = UserGroupIdSerializer
+    
+    def get_queryset(self):
+        username = self.kwargs['username']
+        return User.objects.filter(username=username)
 
 class UserViewAV(APIView):
     

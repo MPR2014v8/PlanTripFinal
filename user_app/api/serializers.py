@@ -6,6 +6,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = "__all__"
+
+class UserGroupIdSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ['groups',]
         
 class UserAccountSerializer(serializers.ModelSerializer):
     
