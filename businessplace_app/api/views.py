@@ -48,6 +48,11 @@ class BusinessPlaceUpateViewAV(APIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id):
+        place = BusinessPlace.objects.get(id=id)
+        place.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class BusinessPlaceUserViewAV(generics.ListAPIView):
     serializer_class = BusinessPlaceSerializer
