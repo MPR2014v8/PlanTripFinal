@@ -24,6 +24,20 @@ def business_place_pic_view(request):
 def business_place_payment_view(request):
     return render(request, '../templates/business_place_payment_manage.html', {})
 
+class BusinessPlaceCreateViewAV(APIView):
+    
+    def get(self, request):
+        place = BusinessPlace.objects.all()
+        serializer = BusinessPlaceSerializer(place, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = BusinessPlaceSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class BusinessPlaceUserViewAV(generics.ListAPIView):
     serializer_class = BusinessPlaceSerializer
 
