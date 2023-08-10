@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 
 
 class BusinessType(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=60)
     detaill = models.TextField(null=True, blank=True)
 
     def __str__(self):
@@ -21,7 +21,7 @@ class BusinessPlace(models.Model):
     # DecimalField.decimal_places
     # The number of decimal places to store with the number.
 
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=60)
     detaill = models.TextField(null=True, blank=True)
     district = models.TextField(null=True, blank=True)
     lat = models.DecimalField(
@@ -55,7 +55,7 @@ class BusinessPlace(models.Model):
 
 
 class BusinessPlacePicture(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=60)
     detaill = models.TextField(null=True, blank=True)
     link = models.URLField(null=True, blank=True)
     img = models.ImageField(null=True, blank=True)
@@ -72,7 +72,7 @@ class BusinessPlacePicture(models.Model):
 
 
 class VirtualTour(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=60)
     link = models.URLField(null=True, blank=True)
     created_datetime = models.DateTimeField(auto_now_add=True)
     change_datetime = models.DateTimeField(default=datetime.datetime.now())
