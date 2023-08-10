@@ -42,7 +42,7 @@ class BusinessPlaceCreateViewAV(APIView):
 class BusinessPlaceUpateViewAV(APIView):
     def put(self, request, id):
         place = BusinessPlace.objects.get(id=id)
-        serializer = RatingAndCommentSerializer(place, data=request.data)
+        serializer = BusinessPlaceSerializer(place, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
