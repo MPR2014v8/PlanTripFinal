@@ -132,13 +132,6 @@ class TripDetailPlaceAndTripIdViewAV(generics.ListAPIView):
         id_place = self.kwargs['id_place']
         return TripDetail.objects.filter(trip__id=id_trip).filter(place__id=id_place)
     
-    def delete(self):
-        id_trip = self.kwargs['id_trip']
-        id_place = self.kwargs['id_place']
-        trip = TripDetail.objects.filter(trip__id=id_trip).filter(place__id=id_place)
-        trip.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-    
 # class TripUserAllViewAV(generics.ListAPIView):
     
 #     serializer_class = TripSerializer
