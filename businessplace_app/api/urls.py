@@ -10,7 +10,7 @@ urlpatterns = [
     path('business-all/', BusinessPlaceViewAV.as_view(), name='businessView-all'),
     path('business/', BusinessPlaceSearchView.as_view(), name='businessView'),
     path('business-create/', BusinessPlaceCreateViewAV.as_view(), name='businessCreateView'),
-    path('business-update/<int:id>', BusinessPlaceUpateViewAV.as_view(), name='businessUpateView'),
+    path('business-update/<int:id>/', BusinessPlaceUpateViewAV.as_view(), name='businessUpateView'),
     path('business/<int:id>/', BusinessPlaceDetailView.as_view(), name='businessDetailView'),
     
     path('business/place/', business_place_view, name='businessPlaceView'),
