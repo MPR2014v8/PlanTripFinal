@@ -11,7 +11,7 @@ class UserGroupIdSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['groups',]
+        fields = ['id','groups',]
         
 class UserAccountSerializer(serializers.ModelSerializer):
     
