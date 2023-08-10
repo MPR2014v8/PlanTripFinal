@@ -92,7 +92,7 @@ class RatingAndComment(models.Model):
     change_datetime = models.DateTimeField(default=datetime.datetime.now())
 
     place = models.ForeignKey(
-        BusinessPlace, on_delete=models.CASCADE, related_name="place")
+        BusinessPlace, on_delete=models.CASCADE, related_name="placeRac")
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="rac_user")
 

@@ -10,6 +10,8 @@ class BusinessPlaceSerializer(serializers.ModelSerializer):
 
 class RatingAndCommentSerializer(serializers.ModelSerializer):
     
+    placeRac = BusinessPlaceSerializer(read_only=True)
+    
     class Meta:
         model = RatingAndComment
         fields = "__all__"

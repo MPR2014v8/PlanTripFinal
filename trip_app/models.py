@@ -22,8 +22,8 @@ class Trip(models.Model):
         return self.name + " | " + self.detail + " | " + str(self.user.username)
     
 class TripDetail(models.Model):
-    place = models.ForeignKey(BusinessPlace, on_delete=models.CASCADE, related_name="places")
-    trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name="trip")
+    place = models.ForeignKey(BusinessPlace, on_delete=models.CASCADE, related_name="placeAllDetail")
+    trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name="tripAllDetail")
     chkIn = models.BooleanField(default=False)
     
     created_datetime = models.DateTimeField(auto_now_add=True)

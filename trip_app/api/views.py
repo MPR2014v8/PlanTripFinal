@@ -76,7 +76,7 @@ class TripDetialPlaceViewAV(APIView):
 
 class TripDetailPlacelViewAV(APIView):
     
-    serializer_class = TripSerializer
+    serializer_class = TripDetailSerializer
 
     def get(self, request, id):
         try:
@@ -114,3 +114,19 @@ class TripUserIdViewAV(generics.ListAPIView):
     def get_queryset(self):
         id = self.kwargs['id']
         return Trip.objects.filter(user_id=id)
+    
+class TripDetailIdViewAV(generics.ListAPIView):
+    
+    serializer_class = TripDetailSerializer
+
+    def get_queryset(self):
+        id = self.kwargs['id']
+        return TripDetail.objects.filter(trip__id=id)
+    
+# class TripUserAllViewAV(generics.ListAPIView):
+    
+#     serializer_class = TripSerializer
+
+#     def get_queryset(self):
+#         id = self.kwargs['id']
+#         return Trip.objects.filter(user_id=id)
