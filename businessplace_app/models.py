@@ -33,7 +33,7 @@ class BusinessPlace(models.Model):
     timeClose = models.TimeField(null=True, blank=True)
     website = models.URLField()
 
-    pic1 = models.ImageField()
+    pic1 = models.ImageField(null=True, blank=True)
     pic2 = models.ImageField(null=True, blank=True)
     pic3 = models.ImageField(null=True, blank=True)
 
