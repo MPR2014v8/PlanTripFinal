@@ -37,7 +37,9 @@ class BusinessPlaceCreateViewAV(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
+class BusinessPlaceUpateViewAV(APIView):
     def put(self, request, id):
         place = BusinessPlace.objects.get(id=id)
         serializer = RatingAndCommentSerializer(place, data=request.data)
