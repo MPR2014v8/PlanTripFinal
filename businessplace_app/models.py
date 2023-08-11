@@ -22,7 +22,7 @@ class BusinessPlace(models.Model):
     # The number of decimal places to store with the number.
 
     name = models.CharField(max_length=60)
-    detaill = models.TextField(null=True, blank=True)
+    detaill = models.CharField(max_length=1024, null=True, blank=True)
     district = models.TextField(null=True, blank=True)
     lat = models.DecimalField(
         max_digits=9, decimal_places=6, null=True, blank=True)
