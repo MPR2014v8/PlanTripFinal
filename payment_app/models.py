@@ -11,7 +11,7 @@ class Payment(models.Model):
     upload_date = models.DateTimeField(default=datetime.datetime.now())
     change_datetime = models.DateTimeField(default=datetime.datetime.now())
     upload_img = models.ImageField(null=True, blank=True)
-    upload_img_link = models.ImageField(null=True, blank=True)
+    upload_img_link = models.URLField(null=True, blank=True)
 
     customer = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="customer")
