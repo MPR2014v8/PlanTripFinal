@@ -20,8 +20,8 @@ class PaymentAdmin(admin.ModelAdmin):
             queryset = queryset.filter(customer=request.user).filter(payment_status=False)
         return queryset
 
-    def save_model(self, request, obj, form, change):
-        obj.customer = request.user
-        return super().save_model(request, obj, form, change)
+    # def save_model(self, request, obj, form, change):
+    #     obj.customer = request.user
+    #     return super().save_model(request, obj, form, change)
 
 admin.site.register(Payment, PaymentAdmin)
