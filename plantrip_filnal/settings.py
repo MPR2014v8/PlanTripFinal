@@ -171,3 +171,13 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+AWS_ACCESS_KEY_ID = 'AKIAQLT75BYL5Q4Y7BOJ'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'plantripbucket'
+AWS_S3_SIGNATURE_NAME = 's3v4',
+AWS_S3_REGION_NAME = 'ap-southeast-1'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL =  None
+AWS_S3_VERITY = True
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
