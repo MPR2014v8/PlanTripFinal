@@ -3,7 +3,7 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 from businessplace_app.api.serializers import BusinessPlaceSerializer
 from test_app.forms import BusinessPlaceEditForm, BusinessPlaceForm, EmployeeForm
-from businessplace_app.models import BusinessPlace
+from businessplace_app.models import BusinessPlace, BusinessType
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.http import JsonResponse
@@ -129,6 +129,22 @@ def addnew(request):
         hour_close = request.POST.get('hour-close')
         minute_open = request.POST.get('minute-open')
         minute_close = request.POST.get('minute-close')
+        
+        name = request.POST.get('name')
+        district = request.POST.get('district')
+        type = request.POST.get('type')
+        address = request.POST.get('address')
+        lat = request.POST.get('lat')
+        lng = request.POST.get('lng')
+        detail = request.POST.get('detail')
+        timeOpen = request.POST.get('timeOpen')
+        timeClose = request.POST.get('timeClose')
+        website = request.POST.get('website')
+        pic1 = request.POST.get('pic1')
+        pic2 = request.POST.get('pic2')
+        pic3 = request.POST.get('name')
+        vr = request.POST.get('vr')
+        place_user = request.POST.get('place_user')
 
         time_open = str(hour_open) + ":" + str(minute_open)
         time_close = str(hour_close) + ":" + str(minute_close)
@@ -137,20 +153,45 @@ def addnew(request):
         timeOpen_object = datetime.strptime(time_open, time_format).time()
         timeClose_object = datetime.strptime(time_close, time_format).time()
 
-        instances = {
-            "timeOpen": timeOpen_object,
-            "timeClose": timeClose_object,
-        }
+        # instances = {
+        #     "timeOpen": timeOpen_object,
+        #     "timeClose": timeClose_object,
+        # }
+        
+        place = BusinessPlace(
+            name=name, 
+            district=district, 
+            type=BusinessType.objects.get(pk=int(type)), 
+            address=address, 
+            lat=lat, 
+            lng=lng, 
+            detail=detail, 
+            timeOpen=timeOpen_object, 
+            timeClose=timeClose_object,
+            website=website,
+            pic1=pic1,
+            pic2=pic2,
+            pic3=pic3,
+            vr=vr,
+            place_user=User.objects.get(pk=int(place_user)),
+        )
+        print("place,", place)
 
         # ลองหาวิธีเพิ่ม ข้อมูลที่ละตัวใน form
         form = BusinessPlaceForm(
-            request.POST, request.FILES, instance=instances)
-        print("tiemOpen,", form.timeOpen)
-        print("tiemClose,", form.timeClose)
+            request.POST, request.FILES, instance=place
+            # request.POST, request.FILES,
+            )
+        form.timeOpen = time_open
+        form.timeClose = time_close
+        # print("type,", type)
+        # print("place_user,", place_user)
+        # print("tiemOpen,", form.timeOpen)
+        # print("tiemClose,", form.timeClose)
 
         if form.is_valid():
             try:
-                # form.save()
+                form.save()
                 return redirect('/test/')
             except Exception as e:
                 print('Error saving:', e)

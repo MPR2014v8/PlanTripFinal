@@ -157,11 +157,12 @@ class BusinessPlaceForm(forms.ModelForm):
 
         fields = ['name', 'district', 'type', 'address', 'lat', 'lng',  'detail', 'timeOpen', 'timeClose',
                   'website', 'pic1', 'pic2', 'pic3', 'vr', 'place_user']
+        
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'address': forms.TextInput(attrs={'class': 'form-control'}),
-            'timeOpen': forms.TimeInput(attrs={'class': 'form-control', 'type': 'hidden'}),
-            'timeClose': forms.TimeInput(attrs={'class': 'form-control', 'type': 'hidden'}),
+            'timeOpen': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'timeClose': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
             'website': forms.URLInput(attrs={'class': 'form-control'}),
             'vr': forms.URLInput(attrs={'class': 'form-control'},),
             'place_user': forms.NumberInput(attrs={'class': 'form-control'},),
