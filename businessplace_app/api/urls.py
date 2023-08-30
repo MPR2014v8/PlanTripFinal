@@ -8,6 +8,7 @@ urlpatterns = [
     path('business/login/', business_login_view, name='businessLoginView'),
     
     path('business-all/', BusinessPlaceViewAV.as_view(), name='businessView-all'),
+    path('business-all-join/', get_list_place, name='businessView-all-join'),
     path('business/', BusinessPlaceSearchView.as_view(), name='businessView'),
     path('business-create/', BusinessPlaceCreateViewAV.as_view(), name='businessCreateView'),
     path('business-update/<int:id>/', BusinessPlaceUpateViewAV.as_view(), name='businessUpateView'),

@@ -8,6 +8,9 @@ from django.contrib.auth.models import User
 class BusinessType(models.Model):
     name = models.CharField(max_length=60)
     detaill = models.TextField(null=True, blank=True)
+    
+    class Meta:
+        db_table = 'BusinessType'
 
     def __str__(self):
         return self.name
@@ -22,16 +25,17 @@ class BusinessPlace(models.Model):
     # The number of decimal places to store with the number.
 
     name = models.CharField(max_length=60)
-    detaill = models.TextField(null=True, blank=True)
+    detail = models.TextField(null=True, blank=True)
     district = models.TextField(null=True, blank=True)
     lat = models.DecimalField(
         max_digits=9, decimal_places=6, null=True, blank=True)
     lng = models.DecimalField(
         max_digits=9, decimal_places=6, null=True, blank=True)
     address = models.TextField()
+    
     timeOpen = models.TimeField(null=True, blank=True)
     timeClose = models.TimeField(null=True, blank=True)
-    website = models.URLField()
+    website = models.URLField(null=True, blank=True)
 
     pic1 = models.ImageField(null=True, blank=True)
     pic2 = models.ImageField(null=True, blank=True)
@@ -42,14 +46,17 @@ class BusinessPlace(models.Model):
     pic_link3 = models.URLField(null=True, blank=True)
     vr = models.URLField(null=True, blank=True)
 
-    created_datetime = models.DateTimeField(auto_now_add=True)
-    change_datetime = models.DateTimeField(default=datetime.datetime.now())
+    # created_datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    # change_datetime = models.DateTimeField(default=datetime.datetime.now(), null=True, blank=True)
 
     type = models.ForeignKey(
         BusinessType, on_delete=models.CASCADE, related_name="type_business_place")
     place_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="place_user")
-
+    
+    class Meta:
+        db_table = 'BusinessPlace'
+        
     def __str__(self):
         return self.name + " | " + str(self.type.name)
 
@@ -66,6 +73,9 @@ class BusinessPlacePicture(models.Model):
         BusinessPlace, on_delete=models.CASCADE, related_name="picture_business_place")
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="pic_user")
+    
+    class Meta:
+        db_table = 'BusinessPlacePicture'
 
     def __str__(self):
         return self.name + " | " + str(self.place.name)
@@ -95,6 +105,9 @@ class RatingAndComment(models.Model):
         BusinessPlace, on_delete=models.CASCADE, related_name="placeRac")
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="rac_user")
+    
+    class Meta:
+        db_table = 'RatingAndComment'
 
     def __str__(self):
         return str(self.score) + " | " + str(self.place.name) + " | " + str(self.user.username)

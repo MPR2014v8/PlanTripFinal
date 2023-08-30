@@ -1,4 +1,8 @@
+import json
+from django.db import connection
+from django.db.models import Q
 from django.forms import ValidationError
+from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.views import APIView
 from businessplace_app.api.serializers import BusinessPlaceSerializer, RatingAndCommentSerializer
@@ -8,6 +12,55 @@ from rest_framework import filters
 from rest_framework import generics
 from rest_framework import status
 
+
+def get_list_place(request):
+
+    data_list = []
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT 
+                bp.id as place_id, bp.name as place_name, detail, lat, lng, district,
+                address, timeOpen, timeClose, website,
+                type_id, bt.name as type_name,
+                place_user_id, au.username, au.email
+                pic1, pic2, pic3, vr
+            FROM PLANTRIPDB.BusinessPlace as bp
+            INNER JOIN PLANTRIPDB.auth_user as au
+                ON bp.place_user_id = au.id 
+            INNER JOIN PLANTRIPDB.BusinessType as bt
+                ON bp.type_id = bt.id               
+        """)
+        data_read = cursor.fetchall()
+        print(data_read[0])
+
+    for row in data_read:
+        data_list.append({
+            "place_id": str(row[0]),
+            "place_name": str(row[1]),
+            "detail": str(row[2]),
+            "lat": str(row[3]),
+            "lng": str(row[4]),
+            "district": str(row[5]),
+            "address": str(row[6]),
+            "timeOpen": str(row[7]),
+            "timeClose": str(row[8]),
+            "website": str(row[9]),
+            "type_id": str(row[10]),
+            "type_name": str(row[11]),
+            "place_user_id": str(row[12]),
+            "username": str(row[13]),
+            "email": str(row[14]),
+            "pic1": str(row[15]),
+            "pic2": str(row[16]),
+            "pic3": str(row[17]),
+            "vr": str(row[-1]),
+        })
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
 
 def business_login_view(request):
     return render(request, '../templates/business_login_page.html', {})
@@ -140,6 +193,8 @@ class RatingAndCommentPlace(generics.ListAPIView):
     def get_queryset(self):
         id_place = self.kwargs['id_place']
         return RatingAndComment.objects.filter(place__id=id_place)
+    
+
 
 
 

@@ -1,0 +1,218 @@
+{% extends "base_test.html" %} {% block title %} แก้ไขกิจการ {% endblock title %} {% block content %}
+<div class="container mb-5 mt-2">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">แก้ไขข้อมูลกิจการ</h3>
+        </div>
+        <div class="card-body">
+          <form
+            action="{% url 'test:test_update' pk=place.id %}"
+            method="post"
+            class="post-form"
+            enctype="multipart/form-data"
+          >
+            {% csrf_token %}
+            <div class="form-row">
+              <div class="form-group col">
+                <label>ชื่อกิจการ :</label>
+                <input
+                  type="text"
+                  name="name"
+                  value="{{ place.name }}"
+                  class="form-control"
+                  maxlength="60"
+                  required
+                  id="id_name"
+                />
+              </div>
+              <div class="form-row">
+                <div class="form-group col">
+                  <label>อำเภอ :</label>
+                  <select name="district" class="form-control" id="id_district">
+                    <option value="เมืองอุดรธานี" {% if place.district == 'เมืองอุดรธานี' %}selected{% endif %}>
+                      เมืองอุดรธานี
+                    </option>
+                    <option value="กุดจับ" {% if place.district == 'กุดจับ' %}selected{% endif %}>กุดจับ</option>
+                    <option value="หนองวัวซอ" {% if place.district == 'หนองวัวซอ' %}selected{% endif %}>หนองวัวซอ</option>
+                    <option value="กุมภวาปี" {% if place.district == 'กุมภวาปี' %}selected{% endif %}>กุมภวาปี</option>
+                    <option value="โนนสะอาด" {% if place.district == 'โนนสะอาด' %}selected{% endif %}>โนนสะอาด</option>
+                    <option value="หนองหาน" {% if place.district == 'หนองหาน' %}selected{% endif %}>หนองหาน</option>
+                    <option value="ทุ่งฝน" {% if place.district == 'ทุ่งฝน' %}selected{% endif %}>ทุ่งฝน</option>
+                    <option value="ไชยวาน" {% if place.district == 'ไชยวาน' %}selected{% endif %}>ไชยวาน</option>
+                    <option value="ศรีธาตุ" {% if place.district == 'ศรีธาตุ' %}selected{% endif %}>ศรีธาตุ</option>
+                    <option value="วังสามหมอ" {% if place.district == 'วังสามหมอ' %}selected{% endif %}>วังสามหมอ</option>
+                    <option value="บ้านดุง" {% if place.district == 'บ้านดุง' %}selected{% endif %}>บ้านดุง</option>
+                    <option value="บ้านผือ" {% if place.district == 'บ้านผือ' %}selected{% endif %}>บ้านผือ</option>
+                    <option value="น้ำโสม" {% if place.district == 'น้ำโสม' %}selected{% endif %}>น้ำโสม</option>
+                    <option value="เพ็ญ" {% if place.district == 'เพ็ญ' %}selected{% endif %}>เพ็ญ</option>
+                    <option value="เพ็ญ" {% if place.district == 'เพ็ญ' %}selected{% endif %}>เพ็ญ</option>
+                    <option value="สร้างคอม" {% if place.district == 'สร้างคอม' %}selected{% endif %}>สร้างคอม</option>
+                    <option value="หนองแสง" {% if place.district == 'หนองแสง' %}selected{% endif %}>หนองแสง</option>
+                    <option value="นายูง" {% if place.district == 'นายูง' %}selected{% endif %}>นายูง</option>
+                    <option value="พิบูลย์รักษ์" {% if place.district == 'พิบูลย์รักษ์' %}selected{% endif %}>พิบูลย์รักษ์</option>
+                    <option value="กู่แก้ว" {% if place.district == 'กู่แก้ว' %}selected{% endif %}>กู่แก้ว</option>
+                    <option value="ประจักษ์ศิลปาคม" {% if place.district == 'ประจักษ์ศิลปาคม' %}selected{% endif %}>ประจักษ์ศิลปาคม</option>
+                  </select>
+                <div class="form-group">
+                  <label>ประเภทกิจการ :</label>
+                  <select name="type" class="form-control" id="id_type">
+                    <option value="1" {% if place.type == '1' %}selected{% endif %}>สถานที่ท่องเที่ยว</option>
+                    <option value="2" {% if place.type == '2' %}selected{% endif %}>ที่พัก</option>
+                    <option value="3" {% if place.type == '3' %}selected{% endif %}>ร้านหรือคาเฟ่</option>
+                  </select>
+                </div>
+                </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-row">
+                  <div class="form-group col">
+                    <label>ที่อยู่ :</label>
+                    <input
+                      type="text"
+                      name="address"
+                      value="{{ place.address }}"
+                      class="form-control"
+                      required
+                      id="id_address"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group col px-2">
+                    <label>ละติจูด :</label>
+                    <input
+                      type="number"
+                      name="lat"
+                      value="{{ place.lat }}"
+                      step="0.000001"
+                      id="id_lat"
+                    />
+                  </div>
+                  <div class="form-group col px-2">
+                    <label>ลองติจูด :</label>
+                    <input
+                      type="number"
+                      name="lng"
+                      value="{{ place.lng }}"
+                      step="0.000001"
+                      id="id_lng"
+                    />
+                  </div>
+                  <div class="form-group col px-2">
+                    <label>เวลาเปิด : {{ place.timeOpen|time:'h:i:s' }}</label>
+                    {% if place.timeOpen|time:'h' == '09' %}<label>เวลาเปิด : 404 ><' </label>{% endif %}
+                    <input
+                      type="time"
+                      name="timeOpen"
+                      value="{{ place.timeOpen|time:'h:i:s' }}"
+                      class="form-control"
+                      id="id_timeOpen"
+                    />
+                  </div>
+                  <div class="form-group col px-2">
+                    <label>เวลาปิด : {{ place.timeClose|time:'h:i:s' }}</label>
+                    <input
+                      type="time"
+                      name="timeClose"
+                      value="{{ place.timeClose|time:'h:i:s' }}"
+                      class="form-control"
+                      id="id_timeClose"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="form-group">
+                  <label>เว็บไซต์ :</label>
+                  <input
+                    type="url"
+                    name="website"
+                    value="{{ place.website }}"
+                    class="form-control"
+                    maxlength="200"
+                    id="id_website"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>เว็บไซต์ Virtual Tour :</label>
+                  <input
+                    type="url"
+                    name="vr"
+                    value="{{ place.vr }}"
+                    class="form-control"
+                    maxlength="200"
+                    id="id_vr"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label>รูปภาพหลัก :</label>
+                  <img src="{{ pic1 }}" alt="">
+                  <input
+                    type="file"
+                    name="pic1"
+                    accept="image/*"
+                    id="id_pic1"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>รูปภาพรอง 1 :</label>
+                  <img src="{{ pic2 }}" alt="">
+                  <input
+                    type="file"
+                    name="pic2"
+                    accept="image/*"
+                    id="id_pic2"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>รูปภาพรอง 2 :</label>
+                  <img src="{{ pic3 }}" alt="">
+                  <input
+                    type="file"
+                    name="pic3"
+                    accept="image/*"
+                    id="id_pic3"
+                  />
+                </div>
+              </div>
+
+              <div class="col">
+                <label class="">รายละเอียดกิจการ :</label>
+                <div class="form-group">
+                  <textarea
+                    value="{{ place.detail }}"
+                    name="detail"
+                    cols="40"
+                    rows="10"
+                    id="id_detail"
+                  ></textarea>
+                </div>
+                <label class="">แก้ไขโดย : {{ username }}</label>
+                <input
+                    type="hidden"
+                    name="place_user"
+                    value="{{ user_id }}"
+                    class="form-control"
+                    required
+                    id="id_place_user"
+                  />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary" id="id_update">แก้ไขกิจการ</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

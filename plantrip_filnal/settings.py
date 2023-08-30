@@ -25,11 +25,11 @@ SECRET_KEY = 'django-insecure-$4h%^d=(%gl&%e^x+z1o1*9e(t^%7ty1_yney1@6a%&29hib9-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = False
-ALLOWED_HOSTS = ['localhost', 'plantrip-final-f854bbde88de.herokuapp.com']
+# DEBUG = False
+# ALLOWED_HOSTS = ['localhost', 'plantrip-final-f854bbde88de.herokuapp.com']
 
-# DEBUG = True
-# ALLOWED_HOSTS = []
+DEBUG = True
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -44,11 +44,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
 
     'user_app',
     'payment_app',
     'businessplace_app',
     'trip_app',
+    'test_app',
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
@@ -66,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'plantrip_filnal.urls'
@@ -110,7 +113,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -149,6 +151,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
+# MEDIA_URL = f'https://{plantripbucket}/{AWS_LOCATION}/'
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
@@ -175,9 +179,18 @@ CORS_ALLOW_ALL_ORIGINS = True
 AWS_ACCESS_KEY_ID = 'AKIAQLT75BYL5Q4Y7BOJ'
 AWS_SECRET_ACCESS_KEY = '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'
 AWS_STORAGE_BUCKET_NAME = 'plantripbucket'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_S3_SIGNATURE_NAME = 's3v4',
 AWS_S3_REGION_NAME = 'ap-southeast-1'
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL =  None
 AWS_S3_VERITY = True
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# TIME_INPUT_FORMATS = ('%H:%M',)
+# TIME_FORMAT = ('H:i')
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+    '127.0.0.1:8000',
+]

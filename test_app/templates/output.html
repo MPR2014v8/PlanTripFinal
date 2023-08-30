@@ -1,0 +1,7 @@
+{% extends "base_test.html" %} {% block title %}SQL OUTPUT{% endblock title %} {% block content %}
+
+
+    {% for place in data%}
+        <p>{{place}}</p>
+    {% endfor %}
+{% endblock content %}

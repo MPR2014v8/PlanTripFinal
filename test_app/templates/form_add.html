@@ -1,0 +1,133 @@
+{% extends "base_test.html" %} {% block title %} เพิ่มกิจการ {% endblock title %} {% block content %}
+<div class="container mb-5 mt-2">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">เพิ่มข้อมูลกิจการ</h3>
+        </div>
+        <div class="card-body">
+          <form
+            action=""
+            method="post"
+            class="post-form"
+            enctype="multipart/form-data"
+          >
+            {% csrf_token %}
+            <div class="form-row">
+              <div class="form-group col">
+                <label>ชื่อกิจการ :</label>
+                {{ form.name }}
+              </div>
+              <div class="form-row">
+                <div class="form-group col">
+                  <label>อำเภอ :</label>
+                  {{ form.district }}
+                </div>
+                <div class="form-group">
+                  <label>ประเภทกิจการ :</label>
+                  {{ form.type }}
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col">
+                <div class="form-row">
+                  <div class="form-group col">
+                    <label>ที่อยู่ :</label>
+                    {{ form.address }}
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group col px-2">
+                    <label>ละติจูด :</label>
+                    {{ form.lat }}
+                  </div>
+                  <div class="form-group col px-2">
+                    <label>ลองติจูด :</label>
+                    {{ form.lng }}
+                  </div>
+                  <div class="form-group col px-2">
+                    <label>เวลาเปิด :</label>
+                    <select name="hour-open" id="hour">
+                      {% for hour in hours %}
+                      <option value="{{ hour }}">{{ hour }}</option>
+                      {% endfor %}
+                    </select>
+                    <select name="minute-open" id="minute">
+                      {% for minute in minutes %}
+                      <option value="{{ minute }}">{{ minute }}</option>
+                      {% endfor %}
+                    </select>
+                    <label>น.</label>
+                  </div>
+                  <div class="form-group col px-2">
+                    <label>เวลาปิด :</label>
+                    <select name="hour-close" id="hour">
+                      {% for hour in hours %}
+                      <option value="{{ hour }}">{{ hour }}</option>
+                      {% endfor %}
+                    </select>
+                    <select name="minute-close" id="minute">
+                      {% for minute in minutes %}
+                      <option value="{{ minute }}">{{ minute }}</option>
+                      {% endfor %}
+                    </select>
+                    <label>น.</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col">
+                <div class="form-group">
+                  <label>เว็บไซต์ :</label>
+                  {{ form.website }}
+                </div>
+                <div class="form-group">
+                  <label>เว็บไซต์ Virtual Tour :</label>
+                  {{ form.vr }}
+                </div>
+
+                <div class="form-group">
+                  <label>รูปภาพหลัก :</label>
+                  {{ form.pic1 }}
+                </div>
+                <div class="form-group">
+                  <label>รูปภาพรอง 1 :</label>
+                  {{ form.pic2 }}
+                </div>
+                <div class="form-group">
+                  <label>รูปภาพรอง 2 :</label>
+                  {{ form.pic3 }}
+                </div>
+              </div>
+
+              <div class="col">
+                <label class="">รายละเอียดกิจการ :</label>
+                <div class="form-group">{{ form.detail }}</div>
+                <label class="">เพิ่มโดย : {{ username }}</label>
+                <input
+                  type="hidden"
+                  name="place_user"
+                  value="{{ user_id }}"
+                  class="form-control"
+                  required
+                  id="id_place_user"
+                />
+              </div>
+            </div>
+
+            <div class="form-group pt-4">
+              <button type="submit" class="btn btn-primary" id="id_create">
+                เพิ่มกิจการ
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

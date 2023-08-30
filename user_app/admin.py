@@ -17,10 +17,10 @@ class AccountInline(admin.StackedInline):
     
 class CustomizedUserAdmin(UserAdmin):
     inlines = (AccountInline, )
-    
 
 admin.site.unregister(User)
 admin.site.register(User, CustomizedUserAdmin)
+
 
 admin.site.site_header = 'Plantrip | Administration'
 admin.site.site_title  = 'Plantrip | Administration'
