@@ -104,22 +104,21 @@
                     />
                   </div>
                   <div class="form-group col px-2">
-                    <label>เวลาเปิด : {{ place.timeOpen|time:'h:i:s' }}</label>
-                    {% if place.timeOpen|time:'h' == '09' %}<label>เวลาเปิด : 404 ><' </label>{% endif %}
+                    <label>เวลาเปิด : {{ timeOpen }}</label>
                     <input
                       type="time"
                       name="timeOpen"
-                      value="{{ place.timeOpen|time:'h:i:s' }}"
+                      value="{{ timeOpen }}"
                       class="form-control"
                       id="id_timeOpen"
                     />
                   </div>
                   <div class="form-group col px-2">
-                    <label>เวลาปิด : {{ place.timeClose|time:'h:i:s' }}</label>
+                    <label>เวลาปิด : {{ timeClose }}</label>
                     <input
                       type="time"
                       name="timeClose"
-                      value="{{ place.timeClose|time:'h:i:s' }}"
+                      value="{{ timeClose }}"
                       class="form-control"
                       id="id_timeClose"
                     />
@@ -133,7 +132,7 @@
                   <input
                     type="url"
                     name="website"
-                    value="{{ place.website }}"
+                    value="{{ website }}"
                     class="form-control"
                     maxlength="200"
                     id="id_website"
@@ -144,7 +143,7 @@
                   <input
                     type="url"
                     name="vr"
-                    value="{{ place.vr }}"
+                    value="{{ vr }}"
                     class="form-control"
                     maxlength="200"
                     id="id_vr"

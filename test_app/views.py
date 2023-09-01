@@ -15,9 +15,14 @@ import base64
 
 from django.db import connection
 from django.db.models import Q
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group 
+from django.contrib.auth import authenticate, login, logout
 
+from django.contrib import messages
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
+
 
 def get_list_place(request):
 
@@ -111,13 +116,92 @@ def image_view(request, pk):
 
 
 def index(request):
-    user_id = request.user.id
-    user_name = request.user.username
-    places = BusinessPlace.objects.filter(place_user_id=user_id)
-    return render(request, "index.html", {'places': places})
+    if request.method == 'POST':
+        search_query = request.POST['search_query']
+        print("search=", search_query)
+        places = BusinessPlace.objects.filter(name__contains=search_query)
+        return render(request, "index.html", {'places': places})
+    else:
+        # user_id = request.user.id
+        # places = BusinessPlace.objects.filter(place_user_id=user_id)
+        # return render(request, "index.html", {'places': places})
+    
+        user_id = request.user.id
+        places = BusinessPlace.objects.filter(place_user_id=user_id)
+        p = Paginator(places, 5)  
+        page_number = request.GET.get('page')
+        try:
+            page_obj = p.get_page(page_number)  
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
+        context = {'places': page_obj}
+        return render(request, 'index.html', context)
+ 
+def logout_user(request):
+    logout(request)
+    messages.success(request, "ออกจากระบบแล้ว.")
+    return redirect("/",)
 
+def index_login(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        
+        if user is not None:
+            login(request, user)
+            messages.success(request, 'ยินดีตอนรับสู่ PlanTrip')
+            return redirect('/test/')
+        else:
+            messages.error(request, 'เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบ ชื่อผู้ใช้และรหัสผ่าน. ')
+            return render(request, "login.html",)
+        
+    return render(request, "login.html",)
+
+def signup_business(request):
+    if request.method == 'POST':
+        try:
+            first_name = request.POST['firstname']
+            last_name = request.POST['lastname']
+            email = request.POST['email']
+            username = request.POST['username']
+            password1 = request.POST['password1']
+            password2 = request.POST['password2']
+            
+            if password1 != password2:
+                messages.error(request, "รหัสผ่านทั้งสองไม่ตรงกัน กรุณาป้อนรหัสผ่านใหม่อีกครั้ง.")
+                return render(request, 'singup.html', error_messages)
+            
+            instance_user = User.objects.create_user(
+                username=username, 
+                email=email, 
+                password=password1, 
+                first_name=first_name, 
+                last_name=last_name
+            )
+            instance_user.save()
+            
+            group = Group.objects.get(name='business')
+            instance_user.groups.add(group)
+            messages.success(request, 'ลงทะเบียนสำเร็จ.')
+            return redirect('/test/login/')
+        
+        except Exception as error:
+            print("ERROR singup_business: ", error)
+            error_messages = {
+                "error": True,
+                "message": "สมัครใช้บริการไม่สำเร็จ."
+            }
+            messages.error(request, "เกิดข้อผิดพลาดขึ้น การสมัครใช้บริการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง.")
+            return render(request, 'singup.html', error_messages)
+    return render(request, 'singup.html')
+        
 
 def addnew(request):
+    
+    # เพิ่มโดยใช้ RAW SQL เลย
     user_id = request.user.id
     user_name = request.user.username
     hours = [str(hour).zfill(2) for hour in range(24)]
@@ -146,17 +230,8 @@ def addnew(request):
         vr = request.POST.get('vr')
         place_user = request.POST.get('place_user')
 
-        time_open = str(hour_open) + ":" + str(minute_open)
-        time_close = str(hour_close) + ":" + str(minute_close)
-
-        time_format = "%H:%M"
-        timeOpen_object = datetime.strptime(time_open, time_format).time()
-        timeClose_object = datetime.strptime(time_close, time_format).time()
-
-        # instances = {
-        #     "timeOpen": timeOpen_object,
-        #     "timeClose": timeClose_object,
-        # }
+        time_open = str(hour_open) + ":" + str(minute_open) + str(":00")
+        time_close = str(hour_close) + ":" + str(minute_close) + str(":00")
         
         place = BusinessPlace(
             name=name, 
@@ -166,8 +241,8 @@ def addnew(request):
             lat=lat, 
             lng=lng, 
             detail=detail, 
-            timeOpen=timeOpen_object, 
-            timeClose=timeClose_object,
+            timeOpen=time_open, 
+            timeClose=time_close,
             website=website,
             pic1=pic1,
             pic2=pic2,
@@ -175,25 +250,20 @@ def addnew(request):
             vr=vr,
             place_user=User.objects.get(pk=int(place_user)),
         )
-        print("place,", place)
+        # print("place,", place)
 
         # ลองหาวิธีเพิ่ม ข้อมูลที่ละตัวใน form
         form = BusinessPlaceForm(
             request.POST, request.FILES, instance=place
-            # request.POST, request.FILES,
-            )
-        form.timeOpen = time_open
-        form.timeClose = time_close
-        # print("type,", type)
-        # print("place_user,", place_user)
-        # print("tiemOpen,", form.timeOpen)
-        # print("tiemClose,", form.timeClose)
+        )
 
         if form.is_valid():
             try:
                 form.save()
+                messages.success(request, "เพิ่มกิจการสำเร็จแล้ว.")
                 return redirect('/test/')
             except Exception as e:
+                messages.error(request, "เกิดข้อผิดพลาดขึ้น การเพิ่มกิจการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง.")
                 print('Error saving:', e)
     else:
         form = BusinessPlaceForm()
@@ -207,14 +277,19 @@ def edit(request, pk):
     pic1_url = get_image_url(place.pic1)
     pic2_url = get_image_url(place.pic2)
     pic3_url = get_image_url(place.pic3)
-    print("pic1=", pic1_url)
-    print("type.id=", place.type.id)
+    # print("pic1=", pic1_url)
+    # print("timeOpen=", place.timeOpen)
+    # print("timeClose=", place.timeClose)
     return render(
         request,
         "edit.html", {
             'place': place,
+            'timeOpen': str(place.timeOpen),
+            'timeClose': str(place.timeClose),
             'user_id': user_id,
             'username': user_name,
+            'website': "" if place.website == None else place.website,
+            'vr': "" if place.vr == None else place.vr,
             'pic1': pic1_url,
             'pic2': pic2_url,
             'pic3': pic3_url}
@@ -232,21 +307,25 @@ def update(request, pk):
 
     if form.is_valid():
         print("FORM IS NOT VALID")
+        messages.success(request, "แก้ไขกิจการสำเร็จแล้ว.")
         form.save()
         return redirect('/test/')
-    return render(
-        request,
-        "edit.html", {
-            'place': place,
-            'user_id': user_id,
-            'username': user_name,
-            'pic1': pic1_url,
-            'pic2': pic2_url,
-            'pic3': pic3_url}
-    )
+    else:
+        messages.error(request, "การแก้ไขกิจการไม่สำเร็จ กรุณาตรวจสอบข้อมูลที่ป้อนและลองใหม่อีกครั้ง.")
+        return render(
+            request,
+            "edit.html", {
+                'place': place,
+                'user_id': user_id,
+                'username': user_name,
+                'pic1': pic1_url,
+                'pic2': pic2_url,
+                'pic3': pic3_url}
+        )
 
 
 def delete(request, pk):
     place = BusinessPlace.objects.get(pk=pk)
     place.delete()
+    messages.success(request, "ลบกิจการสำเร็จแล้ว.")
     return redirect('/test/')

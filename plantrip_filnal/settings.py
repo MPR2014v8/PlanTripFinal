@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,10 +35,7 @@ ALLOWED_HOSTS = ['localhost', 'plantrip-final-f854bbde88de.herokuapp.com']
 
 # Application definition
 
-INSTALLED_APPS = [
-    # 'admin_interface',
-    # 'colorfield',
-    
+INSTALLED_APPS = [    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -45,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'django.contrib.humanize',
+    # 'django.contrib.messages',
 
     'user_app',
     'payment_app',
@@ -194,3 +194,11 @@ INTERNAL_IPS = [
     '127.0.0.1',
     '127.0.0.1:8000',
 ]
+
+MESSAGE_TAGS = {
+        messages.DEBUG: 'alert-secondary',
+        messages.INFO: 'alert-info',
+        messages.SUCCESS: 'alert-success',
+        messages.WARNING: 'alert-warning',
+        messages.ERROR: 'alert-danger',
+}

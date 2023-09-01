@@ -1,19 +1,28 @@
 {% extends "base_test.html" %} {% block title %}Place Recrods{% endblock title %} {% block content %}
-<div class="col-md-12">
+<div class="col-md-12 p-2">
   <span
     ><a href="{% url 'test:test_addnew' %}" class="btn btn-primary"
-      >Add New Record</a
+      >เพิ่มกิจการ</a
     ></span
   >
 </div>
-<div class="table-responsive">
+<form class="d-flex p-2" role="search" method="POST" action="{% url 'test:test_index' %}">
+  {% csrf_token %}
+  <input
+     class="form-control me-2"
+     type="search"
+     placeholder="ชื่อกิจการ"
+     name="search_query"
+  >
+  <button class="btn btn-outline-success" type="submit">ค้นหา</button>
+ </form>
+<div class="table-responsive p-2">
   <table
     id="id_tblbussinessplace"
     class="table table-striped table-bordered"
     width="100%"
   >
     <thead>
-      <th><input type="checkbox" name="" id="checkall" /></th>
       <th>รหัส</th>
       <th>ชื่อกิจการ</th>
       <th>อำเภอ</th>
@@ -24,11 +33,11 @@
     <tbody>
       {% for place in places%}
       <tr>
-        <td><input type="checkbox" name="" id="checkthis" /></td>
         <td>{{ place.id }}</td>
         <td>{{ place.name }}</td>
         <td>{{ place.district }}</td>
         <td>{{ place.type }}</td>
+        
         <td>
           <a
             href="{% url 'test:test_edit' pk=place.id %}"
@@ -50,5 +59,14 @@
     </tbody>
   </table>
 </div>
-
+<center class="p-2">
+  {%if places.has_previous %} {# whether the previous page exists #}
+      <a href="?page={{places.previous_page_number}}"><</a> {# link to the prev page #}
+  {% endif %}
+  <span>{{places.number}}</span> {# the current page number #}
+ 
+  {%if places.has_next %} {# whether the next page exists #}
+      <a href="?page={{places.next_page_number}}">></a> {# link to the next page #}
+  {% endif %}
+</center>
 {% endblock content %}

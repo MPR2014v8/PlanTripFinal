@@ -15,6 +15,9 @@ class Payment(models.Model):
 
     customer = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="customer")
+    
+    class Meta:
+        db_table = 'Payment'
 
     def __str__(self):
         return str(self.customer) + " | " + str(self.payment_date.strftime('%Y-%m-%d %H:%M'))  + " | " + "Payment_Check=" + str(self.payment_status)

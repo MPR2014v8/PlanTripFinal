@@ -66,7 +66,69 @@
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
-    <div class="container">{% block content %} {% endblock %}</div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <div>
+          <a href="{% url 'user:home-view' %}" style="text-decoration: none">
+            <h4 class="text-white">
+              Plan<span class="text-primary">Trip</span>
+              สำหรับผู้ดูประกอบการ
+            </h4>
+          </a>
+        </div>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link text-white" href="#">หน้าหลัก</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" href="#">โปรไฟล์</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" href="#">จัดการกิจการ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" href="#">ชำระค่าบริการ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" href="#">รายงาน</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white btn btn-danger" href="{% url 'test:test_logout' %}">ออกจากระบบ</a>
+            </li>
+            <!-- Add more menu items as needed -->
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      {% for message in messages %}
+      <div class="container-fluid p-0">
+        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+          <button
+            type="button"
+            class="close"
+            data-dismiss="alert"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+          {{ message }}
+        </div>
+      </div>
+      {% endfor %} {% block content %} {% endblock %}
+    </div>
 
     <!-- bootstrap CND -->
     <script

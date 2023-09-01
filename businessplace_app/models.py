@@ -45,6 +45,9 @@ class BusinessPlace(models.Model):
     pic_link2 = models.URLField(null=True, blank=True)
     pic_link3 = models.URLField(null=True, blank=True)
     vr = models.URLField(null=True, blank=True)
+    
+    minPrice = models.FloatField(null=True, blank=True, default=0.0)
+    maxPrice = models.FloatField(null=True, blank=True, default=0.0)
 
     # created_datetime = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     # change_datetime = models.DateTimeField(default=datetime.datetime.now(), null=True, blank=True)
