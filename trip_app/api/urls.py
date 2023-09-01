@@ -14,6 +14,7 @@ urlpatterns = [
     path('trip/<int:id>/', TripDetailViewAV.as_view(), name='tripDetailView'),
     
     path('trip-user/<str:username>/', TripUserViewAV.as_view(), name='tripUserView'),
+    path('trip-user2/<int:pk>/', get_trip_user, name='tripUser2View'),
     
     path('trip-user-id/<int:id>/', TripUserIdViewAV.as_view(), name='tripUserIdView'),
     

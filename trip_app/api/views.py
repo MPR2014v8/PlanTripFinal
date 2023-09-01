@@ -116,6 +116,38 @@ def get_list_trip_detail(request):
 
     return response
 
+def get_trip_user(request, pk):
+
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT * FROM PLANTRIPDB.Trip as t
+            WHERE t.id = {pk};
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+        print(data_read[0])
+
+    for row in data_read:
+        data_list.append({
+            "id": str(row[0]),
+            "name": str(row[1]),
+            "detail": str(row[2]),
+            "position_start": str(row[3]),
+            "position_end": str(row[4]),
+            "budget": str(row[5]),
+            "permission": str(row[6]),
+            "created_datetime": str(row[7]),
+            "change_datetime": str(row[8]),
+            "user_id": str(row[-1]),
+        })
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
 class TripDetialPlaceViewAV(APIView):
 
     def get(self, request):
