@@ -1,8 +1,9 @@
 import json
 from django.db import connection
+from django.http import HttpResponse
+
 from django.db.models import Q
 from django.forms import ValidationError
-from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.views import APIView
 from businessplace_app.api.serializers import BusinessPlaceSerializer, RatingAndCommentSerializer

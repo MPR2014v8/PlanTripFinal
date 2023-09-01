@@ -18,6 +18,9 @@ class Trip(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="trip_user")
     
+    class Meta:
+        db_table = 'Trip'
+    
     def __str__(self) :
         return self.name + " | " + self.detail + " | " + str(self.user.username)
     
@@ -28,6 +31,9 @@ class TripDetail(models.Model):
     
     created_datetime = models.DateTimeField(auto_now_add=True)
     change_datetime = models.DateTimeField(default=datetime.datetime.now())
+    
+    class Meta:
+        db_table = 'TripDetail'
     
     def __str__(self) :
         return str(self.place.name) + " | " + str(self.trip.name) + " | "
