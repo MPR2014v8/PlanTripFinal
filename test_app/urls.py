@@ -17,5 +17,7 @@ urlpatterns = [
     
     path('img/<int:pk>/', image_view, name='test_image_view'),
     path('sql/', get_list_place, name='test_sql'),
+    
+    path('payment_add/', payment_create, name='test_payment'),
 \
 ]

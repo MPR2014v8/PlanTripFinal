@@ -21,8 +21,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-# Create your views here.
 
+from payment_app.models import Payment
+from django.contrib.auth.models import User, Group
+from datetime import datetime
 
 def get_list_place(request):
 
@@ -114,6 +116,26 @@ def image_view(request, pk):
         return HttpResponse('Image not found', status=404)
     # return render(request, 'image_template.html', context)
 
+def payment_create(request):
+    payment_date = datetime.now()
+    if payment_date.day == 1:
+        payment_status = False
+        price = 300.00
+        
+        group_name = 'business'
+        users_in_group = User.objects.filter(groups__name=group_name)
+        print(users_in_group)
+        try:
+            for user in users_in_group:
+                print("Add Payment to ", user.username, " on [", str(payment_date), "], price=", price)
+                p = Payment.objects.create(payment_status=payment_status, price=price, payment_date=payment_date, customer=user)
+                print("p=", p)
+        except PageNotAnInteger:
+            print("Payment Create Failed.")    
+            return HttpResponse("<h1>Payment Create Failed.</h1>")
+        print("Payment Create Successfully.")
+        return HttpResponse("<h1>Payment Create Successfully.</h1>")
+    return HttpResponse("<h1>Payment Not Create.</h1>")
 
 def index(request):
     if request.method == 'POST':
