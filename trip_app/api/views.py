@@ -183,7 +183,8 @@ def get_list_trip_user_detail(request, pk):
                 t.name as trip_name,
                 t.budget as trip_budget,
                 user_id,
-                username
+                username,
+                chkIn
             FROM PLANTRIPDB.TripDetail as td
             inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
             inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
@@ -210,7 +211,8 @@ def get_list_trip_user_detail(request, pk):
             "trip_name": str(row[10]),
             "trip_budget": str(row[11]),
             "user_id": str(row[12]),
-            "username": str(row[-1]),
+            "username": str(row[13]),
+            "chkIn": str(row[-1]),
         })
 
     json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
@@ -238,7 +240,8 @@ def get_list_trip_detail(request):
                 t.name as trip_name,
                 t.budget as trip_budget,
                 user_id,
-                username
+                username,
+                chkIn
             FROM PLANTRIPDB.TripDetail as td
             inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
             inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
@@ -262,7 +265,8 @@ def get_list_trip_detail(request):
             "trip_name": str(row[10]),
             "trip_budget": str(row[11]),
             "user_id": str(row[12]),
-            "username": str(row[-1]),
+            "username": str(row[13]),
+            "chkIn": str(row[-1]),
         })
 
     json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
