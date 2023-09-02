@@ -13,8 +13,11 @@ class Trip(models.Model):
     budget = models.FloatField(null=True, blank=True)
     permission = models.BooleanField(default=True)
     
-    created_datetime = models.DateTimeField(auto_now_add=True)
-    change_datetime = models.DateTimeField(default=datetime.datetime.now())
+    date_start = models.DateField(null=True, blank=True)
+    date_end = models.DateField(null=True, blank=True)
+    
+    # created_datetime = models.DateTimeField(auto_now_add=True)
+    # change_datetime = models.DateTimeField(default=datetime.datetime.now())
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="trip_user")
     
@@ -33,8 +36,8 @@ class TripDetail(models.Model):
     no_sch = models.IntegerField(null=True, blank=True)
     budget = models.FloatField(null=True, blank=True)
     
-    created_datetime = models.DateTimeField(auto_now_add=True)
-    change_datetime = models.DateTimeField(default=datetime.datetime.now())
+    # created_datetime = models.DateTimeField(auto_now_add=True)
+    # change_datetime = models.DateTimeField(default=datetime.datetime.now())
     
     class Meta:
         db_table = 'TripDetail'
