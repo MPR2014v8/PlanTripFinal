@@ -64,6 +64,106 @@ class TripDetailViewAV(APIView):
     
 #### Detail Place List in Trip
 
+def get_list_trip_all(request):
+
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT 
+                td.trip_id,
+                t.name as trip_name,
+                t.detail as trip_detail,
+                position_start,
+                position_end,
+                permission,
+                td.created_datetime as created_datetime_trip,
+                td.change_datetime as change_datetime_trip,
+                t.user_id,
+                t.budget,
+                sum(p.maxPrice) as total_trip,
+                t.budget - sum(p.maxPrice) as balance
+            FROM PLANTRIPDB.TripDetail as td
+            inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+            inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+            group by td.trip_id
+            ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+        print(data_read[0])
+
+    for row in data_read:
+        data_list.append({
+            "trip_id": str(row[0]),
+            "trip_name": str(row[1]),
+            "trip_detail": str(row[2]),
+            "position_start": str(row[3]),
+            "position_end": str(row[4]),
+            "permission": str(row[5]),
+            "created_datetime_trip": str(row[6]),
+            "change_datetime_trip": str(row[7]),
+            "user_id": str(row[8]),
+            "budget": str(row[9]),
+            "total_trip": str(row[10]),
+            "balance": str(row[11]),
+        })
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
+def get_list_trip_all_user(request, pk):
+
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT 
+                td.trip_id,
+                t.name as trip_name,
+                t.detail as trip_detail,
+                position_start,
+                position_end,
+                permission,
+                td.created_datetime as created_datetime_trip,
+                td.change_datetime as change_datetime_trip,
+                t.user_id,
+                t.budget,
+                sum(p.maxPrice) as total_trip,
+                t.budget - sum(p.maxPrice) as balance
+            FROM PLANTRIPDB.TripDetail as td
+            inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+            inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+            group by td.trip_id
+            having trip_id = {pk};
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+        print(data_read[0])
+
+    for row in data_read:
+        data_list.append({
+            "trip_id": str(row[0]),
+            "trip_name": str(row[1]),
+            "trip_detail": str(row[2]),
+            "position_start": str(row[3]),
+            "position_end": str(row[4]),
+            "permission": str(row[5]),
+            "created_datetime_trip": str(row[6]),
+            "change_datetime_trip": str(row[7]),
+            "user_id": str(row[8]),
+            "budget": str(row[9]),
+            "total_trip": str(row[10]),
+            "balance": str(row[11]),
+        })
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
 def get_list_trip_user_detail(request, pk):
 
     data_list = []
