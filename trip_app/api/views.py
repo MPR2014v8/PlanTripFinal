@@ -76,8 +76,6 @@ def get_list_trip_all(request):
                 position_start,
                 position_end,
                 permission,
-                td.created_datetime as created_datetime_trip,
-                td.change_datetime as change_datetime_trip,
                 t.user_id,
                 t.budget,
                 sum(p.maxPrice) as total_trip,
@@ -100,12 +98,10 @@ def get_list_trip_all(request):
             "position_start": str(row[3]),
             "position_end": str(row[4]),
             "permission": str(row[5]),
-            "created_datetime_trip": str(row[6]),
-            "change_datetime_trip": str(row[7]),
-            "user_id": str(row[8]),
-            "budget": str(row[9]),
-            "total_trip": str(row[10]),
-            "balance": str(row[11]),
+            "user_id": str(row[6]),
+            "budget": str(row[7]),
+            "total_trip": str(row[8]),
+            "balance": str(row[-1]),
         })
 
     json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
@@ -126,8 +122,6 @@ def get_list_trip_all_user(request, pk):
                 position_start,
                 position_end,
                 permission,
-                td.created_datetime as created_datetime_trip,
-                td.change_datetime as change_datetime_trip,
                 t.user_id,
                 t.budget,
                 sum(p.maxPrice) as total_trip,
@@ -150,12 +144,10 @@ def get_list_trip_all_user(request, pk):
             "position_start": str(row[3]),
             "position_end": str(row[4]),
             "permission": str(row[5]),
-            "created_datetime_trip": str(row[6]),
-            "change_datetime_trip": str(row[7]),
-            "user_id": str(row[8]),
-            "budget": str(row[9]),
-            "total_trip": str(row[10]),
-            "balance": str(row[11]),
+            "user_id": str(row[6]),
+            "budget": str(row[7]),
+            "total_trip": str(row[8]),
+            "balance": str(row[-1]),
         })
 
     json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
@@ -171,8 +163,6 @@ def get_list_trip_user_detail(request, pk):
         sql = f"""
             SELECT 
                 td.id as id_trip_detail,
-                td.created_datetime as created_datetime_trip_detail,
-                td.change_datetime as change_datetime_trip_detail,
                 place_id,
                 p.name as place_name,
                 lat,
@@ -199,19 +189,17 @@ def get_list_trip_user_detail(request, pk):
     for row in data_read:
         data_list.append({
             "id_trip_detail": str(row[0]),
-            "created_datetime_trip_detail": str(row[1]),
-            "change_datetime_trip_detail": str(row[2]),
-            "place_id": str(row[3]),
-            "place_name": str(row[4]),
-            "lat": str(row[5]),
-            "lng": str(row[6]),
-            "minPrice": str(row[7]),
-            "maxPrice": str(row[8]),
-            "trip_id": str(row[9]),
-            "trip_name": str(row[10]),
-            "trip_budget": str(row[11]),
-            "user_id": str(row[12]),
-            "username": str(row[13]),
+            "place_id": str(row[1]),
+            "place_name": str(row[2]),
+            "lat": str(row[3]),
+            "lng": str(row[4]),
+            "minPrice": str(row[5]),
+            "maxPrice": str(row[6]),
+            "trip_id": str(row[7]),
+            "trip_name": str(row[8]),
+            "trip_budget": str(row[9]),
+            "user_id": str(row[10]),
+            "username": str(row[11]),
             "chkIn": str(row[-1]),
         })
 
@@ -228,8 +216,6 @@ def get_list_trip_detail(request):
         cursor.execute("""
             SELECT 
                 td.id as id_trip_detail,
-                td.created_datetime as created_datetime_trip_detail,
-                td.change_datetime as change_datetime_trip_detail,
                 place_id,
                 p.name as place_name,
                 lat,
@@ -253,19 +239,17 @@ def get_list_trip_detail(request):
     for row in data_read:
         data_list.append({
             "id_trip_detail": str(row[0]),
-            "created_datetime_trip_detail": str(row[1]),
-            "change_datetime_trip_detail": str(row[2]),
-            "place_id": str(row[3]),
-            "place_name": str(row[4]),
-            "lat": str(row[5]),
-            "lng": str(row[6]),
-            "minPrice": str(row[7]),
-            "maxPrice": str(row[8]),
-            "trip_id": str(row[9]),
-            "trip_name": str(row[10]),
-            "trip_budget": str(row[11]),
-            "user_id": str(row[12]),
-            "username": str(row[13]),
+            "place_id": str(row[1]),
+            "place_name": str(row[2]),
+            "lat": str(row[3]),
+            "lng": str(row[4]),
+            "minPrice": str(row[5]),
+            "maxPrice": str(row[6]),
+            "trip_id": str(row[7]),
+            "trip_name": str(row[8]),
+            "trip_budget": str(row[9]),
+            "user_id": str(row[10]),
+            "username": str(row[11]),
             "chkIn": str(row[-1]),
         })
 
@@ -296,8 +280,6 @@ def get_trip_user(request, pk):
             "position_end": str(row[4]),
             "budget": str(row[5]),
             "permission": str(row[6]),
-            "created_datetime": str(row[7]),
-            "change_datetime": str(row[8]),
             "user_id": str(row[-1]),
         })
 
