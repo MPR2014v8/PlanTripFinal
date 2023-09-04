@@ -7,6 +7,9 @@ from businessplace_app.models import *
 class BusinessPlaceAdmin(admin.ModelAdmin):
 
     readonly_fields = ["place_user"]
+    
+    list_filter = ('place_user__username', 'type__name', 'district', 'minPrice', 'maxPrice') 
+    search_fields = ['name', 'place_user__username', 'type__name', 'district']
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)

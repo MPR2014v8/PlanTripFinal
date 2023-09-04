@@ -4,6 +4,8 @@ billiard==4.1.0
 boto3==1.28.31
 botocore==1.31.31
 celery==5.3.3
+certifi==2023.7.22
+charset-normalizer==3.2.0
 click==8.1.7
 click-didyoumean==0.3.0
 click-plugins==1.1.1
@@ -17,12 +19,15 @@ django-debug-toolbar==4.2.0
 django-filter==23.2
 django-humanize==0.1.2
 django-jazzmin==2.6.0
+django-jet-reboot==1.3.3
 django-messages==0.6.0
 django-storages==1.13.2
 djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
+googlemaps==4.10.0
 gunicorn==20.1.0
 humanize==4.8.0
+idna==3.4
 jmespath==1.0.1
 kombu==5.3.2
 mysqlclient==2.2.0
@@ -32,6 +37,7 @@ PyJWT==2.7.0
 python-dateutil==2.8.2
 python-slugify==8.0.1
 pytz==2023.3
+requests==2.31.0
 s3transfer==0.6.2
 six==1.16.0
 sqlparse==0.4.4

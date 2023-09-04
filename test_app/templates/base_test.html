@@ -64,70 +64,71 @@
     </style>
 
     <title>{% block title %}{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/styles.css' %}"
+    />
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container-fluid">
-        <div>
-          <a href="{% url 'user:home-view' %}" style="text-decoration: none">
-            <h4 class="text-white">
-              Plan<span class="text-primary">Trip</span>
-              สำหรับผู้ดูประกอบการ
-            </h4>
-          </a>
+    <div class="dashboard-container">
+      <aside class="sidebar">
+        <h1 class="text-white logo">
+          Plan<span class="text-primary">Trip</span>
+        </h1>
+        สำหรับผู้ประกอบการ
+        <hr />
+        <ul class="menu">
+          <li class="menu-item" id="homepage">
+            <a id="id_home" class="class_link" href="{% url 'user:home-view' %}"
+              >หน้าหลัก</a
+            >
+          </li>
+          <li class="menu-item" id="editProfileUser">
+            <a id="id_home" class="class_link" href="{% url 'test:test_update_profile' %}"
+              >จัดโปรไฟล์</a
+            >
+          </li>
+          <li class="menu-item" id="managePayment">
+            <a id="id_home" class="class_link" href="{% url 'test:test_index_payment' %}"
+              >จัดการค่าชำระบริการ</a
+            >
+          </li>
+          <li class="menu-item" id="report">
+            <a id="id_home" class="class_link" href="{% url 'user:home-view' %}"
+              >รายงาน</a
+            >
+          </li>
+          <li class="menu-item" id="logout">
+            <a
+              id="id_logout"
+              class="class_link"
+              href="{% url 'test:test_logout' %}"
+              >ออกจากระบบ</a
+            >
+          </li>
+        </ul>
+      </aside>
+
+      <main class="main-content">
+        {% for message in messages %}
+
+        <div class="container-fluid p-0">
+          <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+            <button
+              type="button"
+              class="close"
+              data-dismiss="alert"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+            {{ message }}
+          </div>
         </div>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link text-white" href="#">หน้าหลัก</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="#">โปรไฟล์</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="#">จัดการกิจการ</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="#">ชำระค่าบริการ</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white" href="#">รายงาน</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link text-white btn btn-danger" href="{% url 'test:test_logout' %}">ออกจากระบบ</a>
-            </li>
-            <!-- Add more menu items as needed -->
-          </ul>
-        </div>
-      </div>
-    </nav>
-    <div class="container">
-      {% for message in messages %}
-      <div class="container-fluid p-0">
-        <div class="alert {{ message.tags }} alert-dismissible" role="alert">
-          <button
-            type="button"
-            class="close"
-            data-dismiss="alert"
-            aria-label="Close"
-          >
-            <span aria-hidden="true">×</span>
-          </button>
-          {{ message }}
-        </div>
-      </div>
-      {% endfor %} {% block content %} {% endblock %}
+        
+        {% endfor %} {% block content %} {% endblock %}
+      </main>
     </div>
 
     <!-- bootstrap CND -->

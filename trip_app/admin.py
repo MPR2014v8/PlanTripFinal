@@ -4,6 +4,9 @@ from trip_app.models import Trip, TripDetail
 
 # Register your models here.
 class TripAdmin(admin.ModelAdmin):
+    
+    list_filter = ('user__username', 'position_start', 'position_end', 'date_start', 'date_end') 
+    search_fields = ['name', 'user__username', 'position_start', 'position_end', 'date_start', 'date_end']
 
     readonly_fields = ["user"]
 
@@ -17,5 +20,10 @@ class TripAdmin(admin.ModelAdmin):
         obj.user = request.user
         return super().save_model(request, obj, form, change)
     
+class TripDetailAdmin(admin.ModelAdmin):
+    
+    list_filter = ('trip__name', 'trip__user__username', 'chkIn', 'date', 'budget', 'place__name') 
+    search_fields = ['trip__name', 'trip__user__username', 'chkIn', 'date', 'budget', 'place__name']
+    
 admin.site.register(Trip, TripAdmin)
-admin.site.register(TripDetail)
+admin.site.register(TripDetail, TripDetailAdmin)

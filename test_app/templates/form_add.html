@@ -61,6 +61,28 @@
               </div>
 
               <div class="col">
+                  <div class="form-group">
+                    <label>ราคาสินค้า/บริการขั้นต่ำ (ถ้ามี) :</label>
+                    <input
+                      type="number"
+                      name="minPrice"
+                      value="0.0"
+                      class="form-control"
+                      id="id_minPrice"
+                      step="0.01",
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>ราคาสินค้า/บริการสูงสุด (ถ้ามี):</label>
+                    <input
+                      type="number"
+                      name="maxPrice"
+                      value="0.0"
+                      class="form-control"
+                      id="id_maxPrice"
+                      step="0.01",
+                    />
+                  </div>
                 <div class="form-group">
                   <label>เว็บไซต์ :</label>
                   {{ form.website }}
@@ -97,6 +119,7 @@
                   id="id_place_user"
                 />
               </div>
+              
             </div>
 
             <div class="form-group pt-4">

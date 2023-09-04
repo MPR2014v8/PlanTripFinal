@@ -2,7 +2,7 @@ import json
 from django.conf import settings
 from django.shortcuts import render, redirect
 from businessplace_app.api.serializers import BusinessPlaceSerializer
-from test_app.forms import BusinessPlaceEditForm, BusinessPlaceForm, EmployeeForm
+from test_app.forms import BusinessPlaceEditForm, BusinessPlaceForm, EmployeeForm, PaymentForm
 from businessplace_app.models import BusinessPlace, BusinessType
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -15,7 +15,7 @@ import base64
 
 from django.db import connection
 from django.db.models import Q
-from django.contrib.auth.models import User, Group 
+from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
 
 from django.contrib import messages
@@ -25,6 +25,164 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from payment_app.models import Payment
 from django.contrib.auth.models import User, Group
 from datetime import datetime
+from django.urls import reverse, reverse_lazy
+
+from django.contrib.auth.decorators import login_required
+
+from django.contrib.auth.views import PasswordChangeView
+from payment_app.models import Payment
+from django.urls import reverse_lazy
+import googlemaps
+
+
+def get_list_place_with_distance(request, pk):
+    api_key = 'AIzaSyBOtQTtAbg0Rfl7RQ1WPjEjPw6Pg5pu9TA'
+    gmaps = googlemaps.Client(key=api_key)
+    lat_start_position = 0.0
+    lng_start_position = 0.0
+    data_list = []
+    list_place_with_distance = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT  
+                td.id as trip_detail_id,
+                trip_id,
+                t.name as trip_name,
+                position_start,
+                position_end,
+                place_id,
+                p.name as place_name,
+                p.lat,
+                p.lng,
+                d.lat as start_lat,
+                d.lng as start_lng
+            FROM PLANTRIPDB.TripDetail as td
+            inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+            inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+            inner join PLANTRIPDB.District as d on position_start = d.name
+            where trip_id = {pk};
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+
+    for row in data_read:
+        data_list.append({
+            "trip_detail_id": str(row[0]),
+            "trip_id": str(row[1]),
+            "trip_name": str(row[2]),
+            "position_start": str(row[3]),
+            "position_end": str(row[4]),
+            "place_id": str(row[5]),
+            "place_name": str(row[6]),
+            "lat": str(row[7]),
+            "lng": str(row[8]),
+            "start_lat": str(row[9]),
+            "start_lng": str(row[-1]),
+        })
+
+    # print(data_list[0]['lat'])
+    
+    #Find shortest path
+    for p in data_list:
+        point1 = (p['start_lat'], p['start_lng'])
+        point2 = (p['lat'], p['lng'])
+
+        distance_matrix = gmaps.distance_matrix(point1, point2)
+
+        distance_meters = distance_matrix['rows'][0]['elements'][0]['distance']['value']
+        
+        list_place_with_distance.append(
+            {                
+                'trip_detail_id': p['trip_detail_id'],
+                'trip_id': p['trip_id'],
+                'trip_name': p['trip_name'],
+                'position_start': p['position_start'],
+                'position_end': p['position_end'],
+                'place_id': p['place_id'],
+                'place_name': p['place_name'],
+                'lat': p['lat'],
+                'lng': p['lng'],
+                'distance': distance_meters / 1000
+            }
+        )
+    sorted_list_descending = sorted(list_place_with_distance, key=lambda x: x["distance"])
+
+    json_data = json.dumps(sorted_list_descending, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
+
+@login_required
+def update_payment(request, pk):
+    user = request.user
+    pay = Payment.objects.get(pk=pk)
+    form = PaymentForm(request.POST, request.FILES, instance=pay)
+    upload_img = get_image_url(pay.upload_img)
+
+    if form.is_valid():
+        print("FORM IS VALID")
+        messages.success(request, "ชำระค่าบริการสำเร็จแล้ว.")
+        form.save()
+        return redirect('/test/payment/')
+    else:
+        print("form error:", form.errors)
+        messages.error(
+            request, "ชำระค่าบริการไม่สำเร็จ กรุณาตรวจสอบข้อมูลที่ป้อนและลองใหม่อีกครั้ง.")
+        return render(
+            request,
+            "edit_payment.html", {
+                'pay': pay,
+                'upload_img': upload_img
+            }
+        )
+
+
+@login_required
+def payment(request, pk):
+    pay = Payment.objects.get(pk=pk)
+    upload_img = get_image_url(pay.upload_img)
+
+    return render(
+        request,
+        "edit_payment.html", {
+            'pay': pay,
+            'upload_img': upload_img,
+            'user_id': request.user.id,
+        }
+    )
+
+
+@login_required
+def index_payment(request):
+    user_id = request.user.id
+    pay = Payment.objects.filter(
+        customer=request.user).filter(payment_status=False)
+    p = Paginator(pay, 10)
+    page_number = request.GET.get('page')
+
+    datetime_pay = pay[0].payment_date
+    day = datetime_pay.day
+    month = datetime_pay.month
+    year = datetime_pay.year
+
+    print("date", day, month, year)
+    try:
+        page_obj = p.get_page(page_number)
+    except PageNotAnInteger:
+        page_obj = p.page(1)
+    except EmptyPage:
+        page_obj = p.page(p.num_pages)
+    context = {'payment': page_obj}
+    return render(request, 'payment.html', context)
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = 'change_password.html'
+    success_message = "รหัสผ่านถูกเปลี่ยนแล้ว."
+    success_url = reverse_lazy('test:test_index')
+
 
 def get_list_place(request):
 
@@ -47,8 +205,6 @@ def get_list_place(request):
         print(data_read[0])
 
     for row in data_read:
-        # print("row=", row, "\n\n\n")
-        # place
         data_list.append({
             "place_id": str(row[0]),
             "place_name": str(row[1]),
@@ -116,27 +272,86 @@ def image_view(request, pk):
         return HttpResponse('Image not found', status=404)
     # return render(request, 'image_template.html', context)
 
+
+@login_required
+def update_profile(request):
+
+    if request.method == 'POST':
+        pk = request.user.id
+        username = request.user.username
+        try:
+            temp = request.POST.get('username')
+            print("temp=", temp)
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            first_name = request.POST.get('first_name', '')
+            last_name = request.POST.get('last_name', '')
+            with connection.cursor() as cursor:
+                sql = f"""
+                    UPDATE PLANTRIPDB.auth_user
+                    SET 
+                        username = "{username}", 
+                        first_name = "{first_name}", 
+                        last_name = "{last_name}", 
+                        email = "{email}"
+                    WHERE id = {pk};
+                    """
+                cursor.execute(sql)
+            messages.success(request, "แก้ไขโปรไฟลไฟลสำเร็จแล้ว.")
+            return redirect('/test/index_business/')
+        except Exception as e:
+            print("Error=", e)
+            messages.warning(
+                request, "แก้ไขโปรไฟลไฟลไม่สำเร็จ กรุณาตรวจสอบข้อมูล.")
+            return redirect('/test/index_business/')
+
+    if request.user.is_authenticated:
+        pk = request.user.id
+        with connection.cursor() as cursor:
+            sql = f"""
+                SELECT id, username, first_name, last_name, email FROM PLANTRIPDB.auth_user where id = {pk};
+            """
+            cursor.execute(sql)
+            data_read = cursor.fetchone()
+
+        context = {
+            "id": data_read[0],
+            "username": data_read[1],
+            "first_name": data_read[2],
+            "last_name": data_read[3],
+            "email": data_read[4],
+        }
+        return render(request, 'edit_profile.html', {'user': context})
+    else:
+        messages.success(request, "คุณต้องลงชื่อเข้าใช้ก่อน.")
+        return redirect('/test/index_business/')
+
+
 def payment_create(request):
     payment_date = datetime.now()
     if payment_date.day == 1:
         payment_status = False
         price = 300.00
-        
+
         group_name = 'business'
         users_in_group = User.objects.filter(groups__name=group_name)
         print(users_in_group)
         try:
             for user in users_in_group:
-                print("Add Payment to ", user.username, " on [", str(payment_date), "], price=", price)
-                p = Payment.objects.create(payment_status=payment_status, price=price, payment_date=payment_date, customer=user)
+                print("Add Payment to ", user.username,
+                      " on [", str(payment_date), "], price=", price)
+                p = Payment.objects.create(
+                    payment_status=payment_status, price=price, payment_date=payment_date, customer=user)
                 print("p=", p)
         except PageNotAnInteger:
-            print("Payment Create Failed.")    
+            print("Payment Create Failed.")
             return HttpResponse("<h1>Payment Create Failed.</h1>")
         print("Payment Create Successfully.")
         return HttpResponse("<h1>Payment Create Successfully.</h1>")
     return HttpResponse("<h1>Payment Not Create.</h1>")
 
+
+@login_required
 def index(request):
     if request.method == 'POST':
         search_query = request.POST['search_query']
@@ -147,40 +362,55 @@ def index(request):
         # user_id = request.user.id
         # places = BusinessPlace.objects.filter(place_user_id=user_id)
         # return render(request, "index.html", {'places': places})
-    
+
         user_id = request.user.id
         places = BusinessPlace.objects.filter(place_user_id=user_id)
-        p = Paginator(places, 5)  
+        p = Paginator(places, 10)
         page_number = request.GET.get('page')
         try:
-            page_obj = p.get_page(page_number)  
+            page_obj = p.get_page(page_number)
         except PageNotAnInteger:
             page_obj = p.page(1)
         except EmptyPage:
             page_obj = p.page(p.num_pages)
         context = {'places': page_obj}
         return render(request, 'index.html', context)
- 
+
+
 def logout_user(request):
     logout(request)
     messages.success(request, "ออกจากระบบแล้ว.")
     return redirect("/",)
+
 
 def index_login(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
-        
+
         if user is not None:
             login(request, user)
-            messages.success(request, 'ยินดีตอนรับสู่ PlanTrip')
-            return redirect('/test/')
+            if request.user.is_authenticated:
+                user = request.user
+            if user.is_staff:
+                admin_login_url = reverse('admin:login')
+                return redirect(admin_login_url)
+            elif user.groups.filter(name="business").exists():
+                messages.success(request, 'ยินดีตอนรับสู่ PlanTrip')
+                return redirect('/test/index_business/')
+            else:
+                messages.warning(
+                    request, 'สำหรับผู้ใช้กิจการและผู้ดูแลระบบเท่านั้น.')
+                return render(request, '../templates/main/home.html', {})
+
         else:
-            messages.error(request, 'เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบ ชื่อผู้ใช้และรหัสผ่าน. ')
+            messages.error(
+                request, 'เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบ ชื่อผู้ใช้และรหัสผ่าน. ')
             return render(request, "login.html",)
-        
+
     return render(request, "login.html",)
+
 
 def signup_business(request):
     if request.method == 'POST':
@@ -191,38 +421,41 @@ def signup_business(request):
             username = request.POST['username']
             password1 = request.POST['password1']
             password2 = request.POST['password2']
-            
+
             if password1 != password2:
-                messages.error(request, "รหัสผ่านทั้งสองไม่ตรงกัน กรุณาป้อนรหัสผ่านใหม่อีกครั้ง.")
+                messages.error(
+                    request, "รหัสผ่านทั้งสองไม่ตรงกัน กรุณาป้อนรหัสผ่านใหม่อีกครั้ง.")
                 return render(request, 'singup.html', error_messages)
-            
+
             instance_user = User.objects.create_user(
-                username=username, 
-                email=email, 
-                password=password1, 
-                first_name=first_name, 
+                username=username,
+                email=email,
+                password=password1,
+                first_name=first_name,
                 last_name=last_name
             )
             instance_user.save()
-            
+
             group = Group.objects.get(name='business')
             instance_user.groups.add(group)
             messages.success(request, 'ลงทะเบียนสำเร็จ.')
             return redirect('/test/login/')
-        
+
         except Exception as error:
             print("ERROR singup_business: ", error)
             error_messages = {
                 "error": True,
                 "message": "สมัครใช้บริการไม่สำเร็จ."
             }
-            messages.error(request, "เกิดข้อผิดพลาดขึ้น การสมัครใช้บริการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง.")
+            messages.error(
+                request, "เกิดข้อผิดพลาดขึ้น การสมัครใช้บริการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง.")
             return render(request, 'singup.html', error_messages)
     return render(request, 'singup.html')
-        
 
+
+@login_required
 def addnew(request):
-    
+
     # เพิ่มโดยใช้ RAW SQL เลย
     user_id = request.user.id
     user_name = request.user.username
@@ -235,7 +468,7 @@ def addnew(request):
         hour_close = request.POST.get('hour-close')
         minute_open = request.POST.get('minute-open')
         minute_close = request.POST.get('minute-close')
-        
+
         name = request.POST.get('name')
         district = request.POST.get('district')
         type = request.POST.get('type')
@@ -245,6 +478,8 @@ def addnew(request):
         detail = request.POST.get('detail')
         timeOpen = request.POST.get('timeOpen')
         timeClose = request.POST.get('timeClose')
+        minPrice = request.POST.get('minPrice')
+        maxPrice = request.POST.get('maxPrice')
         website = request.POST.get('website')
         pic1 = request.POST.get('pic1')
         pic2 = request.POST.get('pic2')
@@ -254,17 +489,19 @@ def addnew(request):
 
         time_open = str(hour_open) + ":" + str(minute_open) + str(":00")
         time_close = str(hour_close) + ":" + str(minute_close) + str(":00")
-        
+
         place = BusinessPlace(
-            name=name, 
-            district=district, 
-            type=BusinessType.objects.get(pk=int(type)), 
-            address=address, 
-            lat=lat, 
-            lng=lng, 
-            detail=detail, 
-            timeOpen=time_open, 
+            name=name,
+            district=district,
+            type=BusinessType.objects.get(pk=int(type)),
+            address=address,
+            lat=lat,
+            lng=lng,
+            detail=detail,
+            timeOpen=time_open,
             timeClose=time_close,
+            minPrice=minPrice,
+            maxPrice=maxPrice,
             website=website,
             pic1=pic1,
             pic2=pic2,
@@ -283,15 +520,17 @@ def addnew(request):
             try:
                 form.save()
                 messages.success(request, "เพิ่มกิจการสำเร็จแล้ว.")
-                return redirect('/test/')
+                return redirect('/test/index_business/')
             except Exception as e:
-                messages.error(request, "เกิดข้อผิดพลาดขึ้น การเพิ่มกิจการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง.")
+                messages.error(
+                    request, "เกิดข้อผิดพลาดขึ้น การเพิ่มกิจการไม่สำเร็จ กรุณาลองใหม่อีกครั้ง.")
                 print('Error saving:', e)
     else:
         form = BusinessPlaceForm()
     return render(request, "form_add.html", {'form': form, 'user_id': user_id, 'username': user_name, 'hours': hours, 'minutes': minutes})
 
 
+@login_required
 def edit(request, pk):
     user_id = request.user.id
     user_name = request.user.username
@@ -299,9 +538,10 @@ def edit(request, pk):
     pic1_url = get_image_url(place.pic1)
     pic2_url = get_image_url(place.pic2)
     pic3_url = get_image_url(place.pic3)
-    # print("pic1=", pic1_url)
-    # print("timeOpen=", place.timeOpen)
-    # print("timeClose=", place.timeClose)
+
+    print(place.minPrice)
+    print(place.maxPrice)
+
     return render(
         request,
         "edit.html", {
@@ -314,10 +554,14 @@ def edit(request, pk):
             'vr': "" if place.vr == None else place.vr,
             'pic1': pic1_url,
             'pic2': pic2_url,
-            'pic3': pic3_url}
+            'pic3': pic3_url,
+            'minPrice': place.minPrice,
+            'maxPrice': place.maxPrice
+        }
     )
 
 
+@login_required
 def update(request, pk):
     user_id = request.user.id
     user_name = request.user.username
@@ -328,12 +572,13 @@ def update(request, pk):
     pic3_url = get_image_url(place.pic3)
 
     if form.is_valid():
-        print("FORM IS NOT VALID")
+        print("FORM IS VALID")
         messages.success(request, "แก้ไขกิจการสำเร็จแล้ว.")
         form.save()
-        return redirect('/test/')
+        return redirect('/test/index_business/')
     else:
-        messages.error(request, "การแก้ไขกิจการไม่สำเร็จ กรุณาตรวจสอบข้อมูลที่ป้อนและลองใหม่อีกครั้ง.")
+        messages.error(
+            request, "การแก้ไขกิจการไม่สำเร็จ กรุณาตรวจสอบข้อมูลที่ป้อนและลองใหม่อีกครั้ง.")
         return render(
             request,
             "edit.html", {
@@ -346,8 +591,9 @@ def update(request, pk):
         )
 
 
+@login_required
 def delete(request, pk):
     place = BusinessPlace.objects.get(pk=pk)
     place.delete()
     messages.success(request, "ลบกิจการสำเร็จแล้ว.")
-    return redirect('/test/')
+    return redirect('/test/index_business/')

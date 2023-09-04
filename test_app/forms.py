@@ -1,12 +1,32 @@
 from django import forms
+from django.urls import reverse_lazy
 from businessplace_app.models import BusinessPlace, BusinessType
+from payment_app.models import Payment
 from test_app.models import Employee
+
+from django.contrib.auth.models import User
+from datetime import datetime
+
+class PaymentForm(forms.ModelForm):
+    
+    class Meta:
+        model = Payment
+        fields = ['upload_date', 'upload_img']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+        
+        upload_img = forms.ImageField(
+            widget=forms.ClearableFileInput(
+                attrs={'class': 'form-control-file'}
+            )
+        )
 
 
 class EmployeeForm(forms.ModelForm):
     class Meta:
         model = Employee
-        fields = ['name', 'image', 'image_url']
+        fields = ['name', 'image', 'image_url', ]
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
         }
@@ -156,7 +176,7 @@ class BusinessPlaceForm(forms.ModelForm):
         model = BusinessPlace
 
         fields = ['name', 'district', 'type', 'address', 'lat', 'lng',  'detail', 'timeOpen', 'timeClose',
-                  'website', 'pic1', 'pic2', 'pic3', 'vr', 'place_user']
+                  'minPrice', 'maxPrice', 'website', 'pic1', 'pic2', 'pic3', 'vr', 'place_user']
         
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -196,6 +216,19 @@ class BusinessPlaceForm(forms.ModelForm):
             required=False, max_value=10, min_value=0,
             widget=forms.NumberInput(
                 attrs={'class': 'form-label', 'type': 'number'}
+            )
+        )
+        
+        minPrice = forms.FloatField(
+            required=False, min_value=0,
+            widget=forms.NumberInput(
+                attrs={'class': 'form-label', 'type': 'number', 'step': 0.01}
+            )
+        )
+        maxPrice = forms.FloatField(
+            required=False, min_value=0,
+            widget=forms.NumberInput(
+                attrs={'class': 'form-label', 'type': 'number', 'ste': 0.01}
             )
         )
 
@@ -341,12 +374,13 @@ class BusinessPlaceEditForm(forms.ModelForm):
         model = BusinessPlace
 
         fields = ['name', 'district', 'type', 'address', 'lat', 'lng',  'detail', 'timeOpen', 'timeClose',
-                  'website', 'pic1', 'pic2', 'pic3', 'vr', 'place_user']
+                  'minPrice', 'maxPrice', 'website', 'pic1', 'pic2', 'pic3', 'vr', 'place_user']
+        
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'address': forms.TextInput(attrs={'class': 'form-control'}),
-            # 'timeOpen': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
-            # 'timeClose': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'timeOpen': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'timeClose': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
             'website': forms.URLInput(attrs={'class': 'form-control'}),
             'vr': forms.URLInput(attrs={'class': 'form-control'},),
             'place_user': forms.NumberInput(attrs={'class': 'form-control'},),
@@ -380,5 +414,18 @@ class BusinessPlaceEditForm(forms.ModelForm):
             required=False, max_value=10, min_value=0,
             widget=forms.NumberInput(
                 attrs={'class': 'form-label', 'type': 'number'}
+            )
+        )
+        
+        minPrice = forms.FloatField(
+            required=False, min_value=0,
+            widget=forms.NumberInput(
+                attrs={'class': 'form-label', 'type': 'number', 'step': 0.01}
+            )
+        )
+        maxPrice = forms.FloatField(
+            required=False, min_value=0,
+            widget=forms.NumberInput(
+                attrs={'class': 'form-label', 'type': 'number', 'ste': 0.01}
             )
         )

@@ -57,6 +57,7 @@ class BusinessPlace(models.Model):
     place_user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="place_user")
     
+    
     class Meta:
         db_table = 'BusinessPlace'
         

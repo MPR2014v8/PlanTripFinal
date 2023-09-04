@@ -22,6 +22,8 @@ import debug_toolbar
 
 
 urlpatterns = [
+    
+    # path('jet/', include('jet.urls', 'jet')),
     path('admin/', admin.site.urls, name="admin-views"),
     path('', include('user_app.api.urls')),
     path('', include('businessplace_app.api.urls')),

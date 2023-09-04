@@ -1,0 +1,104 @@
+{% extends "base_test.html" %} {% block title %}จัดการการชำระค่าบริการ{% endblock title %} {% block content %}
+<header class="page-header">
+  <h2>จัดการการชำระค่าบริการ</h2>
+</header>
+
+<div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card">
+            <div class="card-header text-center">
+              <h4>ข้อมูลค้างชำระบริการ</h4>
+            </div>
+            <div class="card-body">
+              <form
+                method="post"
+                id="payment-form"
+                enctype="multipart/form-data"
+                action="{% url 'test:test_update_payment' pk=pay.id %}"
+              >
+              {% csrf_token %}
+                <div class="form-group">
+                  <label for="payment_date">วันที่ออกใบแจ้งหนี้</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="payment_date"
+                    name="payment_date"
+                    value="{{pay.payment_date}}"
+                    readonly
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="price">ยอดที่ต้องชำระ</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="price"
+                    name="price"
+                    value="{{pay.price}}"
+                    readonly
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="numberPayment"
+                    >ชำระผ่านการโอน : ธนาคารกสิกรไทย</label
+                  >
+                  <label for="numberPayment">วชิระ ทองเลิศ :</label>
+                  <input
+                    type="url"
+                    class="form-control"
+                    id="numberPayment"
+                    name="numberPayment"
+                    value="0018182521"
+                    readonly
+                  />
+                </div>
+
+                <hr />
+                <div class="form-group">
+                  <label for="upload_img_link"
+                    >อัพโหลดหลักฐานการโอนชำระ</label
+                  >
+                  <img src="{{ upload_img }}" alt="">
+                  <input
+                    type="file"
+                    name="upload_img"
+                    accept="image/*"
+                    id="id_upload_img"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                    <label class="">เพิ่มโดย : {{ pay.customer }}</label>
+                  </div>
+
+                <div class="text-center p-2">
+                  <button
+                    type="submit"
+                    class="btn btn-info btn-lg btn-block"
+                    id="paymentUpload"
+                  >
+                    อัพโหลดหลักฐาน
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+<center class="p-2">
+  {%if pays.has_previous %} {# whether the previous page exists #}
+      <a href="?page={{payment.previous_page_number}}"><</a> {# link to the prev page #}
+  {% endif %}
+  <span>{{pays.number}}</span> {# the current page number #}
+ 
+  {%if pays.has_next %} {# whether the next page exists #}
+      <a href="?page={{payment.next_page_number}}">></a> {# link to the next page #}
+  {% endif %}
+</center>
+{% endblock content %}

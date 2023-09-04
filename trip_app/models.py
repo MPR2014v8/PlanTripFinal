@@ -6,6 +6,7 @@ from businessplace_app.models import BusinessPlace
 
 # Create your models here.
 class Trip(models.Model):
+    
     name = models.CharField(max_length=50)
     detail = models.TextField(null=True, blank=True)
     position_start = models.TextField(null=True, blank=True)

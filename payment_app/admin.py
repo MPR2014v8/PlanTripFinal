@@ -3,9 +3,10 @@ from payment_app.models import Payment
 
 # Register your models here.
 class PaymentAdmin(admin.ModelAdmin):
-
-    # readonly_fields = ["payment_status"]
+    list_filter = ('payment_status', 'payment_date', 'upload_img') 
+    search_fields = ['customer__username',]
     
+    # readonly_fields = ["payment_status"]    
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = super(PaymentAdmin, self).get_readonly_fields(request, obj)
         if not request.user.is_superuser:
