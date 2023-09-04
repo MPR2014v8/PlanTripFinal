@@ -13,8 +13,8 @@ urlpatterns = [
     path('', home_view, name='home-view'),
 
     path('login/', obtain_auth_token, name='login'),
-    # path('register/', registration_view, name='register'),
-    # path('logout/', logout_view, name='logout'),
+    path('register/', registration_view, name='register'),
+    path('logout/', logout_view, name='logout'),
     
     path('logout/', auth_views.LogoutView.as_view(next_page=settings.LOGOUT_REDIRECT_URL), name='myapp_logout'),
 
