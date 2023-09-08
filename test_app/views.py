@@ -35,6 +35,219 @@ from django.urls import reverse_lazy
 import googlemaps
 
 
+def getScorePlace(request):
+    data_list = []
+    try:
+        with connection.cursor() as cursor:
+            sql = f"""
+                    SELECT sum(score) as score_place, place_id, name
+                    FROM PLANTRIPDB.RatingAndComment as rac
+                    inner join PLANTRIPDB.BusinessPlace as p on rac.place_id = p.id
+                    where p.place_user_id = {request.user.id}
+                    group by place_id
+                    ;
+            """
+            cursor.execute(sql)
+            data_read = cursor.fetchall()
+
+            for row in data_read:
+                data_list.append({
+                    "score_place": row[0],
+                    "place_id": row[1],
+                    "name": row[-1],
+                })
+
+    except Exception as e:
+        print("Error: ", e)
+        
+    return data_list
+    
+
+
+def getRacPlace(request, pk):
+    data_list = []
+    try:
+        with connection.cursor() as cursor:
+            sql = f"""
+                SELECT 
+                    rac.id as rac_id,
+                    score,
+                    comment,
+                    created_datetime,
+                    place_id,
+                    p.name as name_place,
+                    user_id,
+                    username
+                FROM PLANTRIPDB.RatingAndComment as rac
+                inner join PLANTRIPDB.BusinessPlace as p on rac.place_id = p.id
+                inner join PLANTRIPDB.auth_user as u on rac.user_id = u.id
+                where p.place_user_id = {request.user.id} and rac.place_id = {pk}
+                ;
+            """
+            cursor.execute(sql)
+            data_read = cursor.fetchall()
+            print(data_read[0])
+
+            for row in data_read:
+                data_list.append({
+                    "rac_id": row[0],
+                    "score": row[1],
+                    "comment": row[2],
+                    "created_datetime": row[3],
+                    "place_id": row[4],
+                    "name_place": row[5],
+                    "user_id": row[6],
+                    "username": row[-1],
+                })
+    except Exception as e:
+        print("Error=", e)
+
+    return data_list
+
+
+@login_required
+def open_report(request, pk):
+    place_use = getCountUsePlace(request)
+    place_score = getScorePlace(request)
+    if request.method == 'POST':
+        search_query = request.POST['search_query']
+        print("search=", search_query)
+        places = BusinessPlace.objects.filter(name__contains=search_query)
+        
+        if place_score == [] or None:
+            return render(request, "report_detail_business.html",
+                      {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                       })
+        else:
+            return render(request, "report_detail_business.html",
+                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                        'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                        })
+    else:
+        places = getRacPlace(request, pk)
+        p = Paginator(places, 10)
+        page_number = request.GET.get('page')
+        try:
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
+    
+        if place_score == [] or None:
+            return render(request, "report_detail_business.html",
+                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                        })
+        else:
+            return render(request, "report_detail_business.html",
+                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                        'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                        })
+
+
+@login_required
+def report(request):
+    place_use = getCountUsePlace(request)
+    if request.method == 'POST':
+        search_query = request.POST['search_query']
+        print("search=", search_query)
+        places = BusinessPlace.objects.filter(name__contains=search_query)
+        return render(request, "report_business.html", {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1]})
+    else:
+        user_id = request.user.id
+        places = BusinessPlace.objects.filter(place_user_id=user_id)
+        p = Paginator(places, 10)
+        page_number = request.GET.get('page')
+        try:
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
+        context = {'places': page_obj,
+                   'place_use': place_use[0], "place_use_nagative": place_use[-1]}
+        return render(request, 'report_business.html', context)
+    
+def get_list_place_with_distance2(request, pk, lat, lng):
+    api_key = 'AIzaSyBOtQTtAbg0Rfl7RQ1WPjEjPw6Pg5pu9TA'
+    gmaps = googlemaps.Client(key=api_key)
+    lat_start_position = lat
+    lng_start_position = lng
+    data_list = []
+    list_place_with_distance = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT  
+                td.id as trip_detail_id,
+                trip_id,
+                t.name as trip_name,
+                position_start,
+                position_end,
+                place_id,
+                p.name as place_name,
+                p.lat,
+                p.lng,
+                d.lat as start_lat,
+                d.lng as start_lng
+            FROM PLANTRIPDB.TripDetail as td
+            inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+            inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+            inner join PLANTRIPDB.District as d on position_start = d.name
+            where trip_id = {pk};
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+
+    for row in data_read:
+        data_list.append({
+            "trip_detail_id": str(row[0]),
+            "trip_id": str(row[1]),
+            "trip_name": str(row[2]),
+            "position_start": str(row[3]),
+            "position_end": str(row[4]),
+            "place_id": str(row[5]),
+            "place_name": str(row[6]),
+            "lat": str(row[7]),
+            "lng": str(row[8]),
+            "start_lat": str(row[9]),
+            "start_lng": str(row[-1]),
+        })
+
+    # print(data_list[0]['lat'])
+
+    # Find shortest path
+    for p in data_list:
+        point1 = (lat_start_position, lng_start_position)
+        point2 = (p['lat'], p['lng'])
+
+        distance_matrix = gmaps.distance_matrix(point1, point2)
+
+        distance_meters = distance_matrix['rows'][0]['elements'][0]['distance']['value']
+
+        list_place_with_distance.append(
+            {
+                'trip_detail_id': p['trip_detail_id'],
+                'trip_id': p['trip_id'],
+                'trip_name': p['trip_name'],
+                'position_start': p['position_start'],
+                'position_end': p['position_end'],
+                'place_id': p['place_id'],
+                'place_name': p['place_name'],
+                'lat': p['lat'],
+                'lng': p['lng'],
+                'distance': distance_meters / 1000
+            }
+        )
+    sorted_list_descending = sorted(
+        list_place_with_distance, key=lambda x: x["distance"])
+
+    json_data = json.dumps(sorted_list_descending,
+                           ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
 def get_list_place_with_distance(request, pk):
     api_key = 'AIzaSyBOtQTtAbg0Rfl7RQ1WPjEjPw6Pg5pu9TA'
     gmaps = googlemaps.Client(key=api_key)
@@ -81,8 +294,8 @@ def get_list_place_with_distance(request, pk):
         })
 
     # print(data_list[0]['lat'])
-    
-    #Find shortest path
+
+    # Find shortest path
     for p in data_list:
         point1 = (p['start_lat'], p['start_lng'])
         point2 = (p['lat'], p['lng'])
@@ -90,9 +303,9 @@ def get_list_place_with_distance(request, pk):
         distance_matrix = gmaps.distance_matrix(point1, point2)
 
         distance_meters = distance_matrix['rows'][0]['elements'][0]['distance']['value']
-        
+
         list_place_with_distance.append(
-            {                
+            {
                 'trip_detail_id': p['trip_detail_id'],
                 'trip_id': p['trip_id'],
                 'trip_name': p['trip_name'],
@@ -105,9 +318,11 @@ def get_list_place_with_distance(request, pk):
                 'distance': distance_meters / 1000
             }
         )
-    sorted_list_descending = sorted(list_place_with_distance, key=lambda x: x["distance"])
+    sorted_list_descending = sorted(
+        list_place_with_distance, key=lambda x: x["distance"])
 
-    json_data = json.dumps(sorted_list_descending, ensure_ascii=False).encode('utf-8')
+    json_data = json.dumps(sorted_list_descending,
+                           ensure_ascii=False).encode('utf-8')
     response = HttpResponse(
         json_data, content_type='application/json; charset=utf-8')
 
@@ -351,18 +566,44 @@ def payment_create(request):
     return HttpResponse("<h1>Payment Not Create.</h1>")
 
 
+def getCountUsePlace(request):
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+                SELECT 
+                    count(*) as count_use_place,
+                        place_id,
+                        p.name as place_name,
+                        trip_id
+                FROM PLANTRIPDB.TripDetail as td
+                inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+                inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+                where p.place_user_id = {request.user.id}
+                group by place_id
+                order by count_use_place DESC
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+
+    for row in data_read:
+        data_list.append({
+            "count_use_place": row[0],
+            "place_id": row[1],
+            "place_name": row[2],
+            "trip_id": row[-1],
+        })
+    return data_list
+
+
 @login_required
 def index(request):
+    place_use = getCountUsePlace(request)
     if request.method == 'POST':
         search_query = request.POST['search_query']
         print("search=", search_query)
         places = BusinessPlace.objects.filter(name__contains=search_query)
-        return render(request, "index.html", {'places': places})
+        return render(request, "index.html", {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1]})
     else:
-        # user_id = request.user.id
-        # places = BusinessPlace.objects.filter(place_user_id=user_id)
-        # return render(request, "index.html", {'places': places})
-
         user_id = request.user.id
         places = BusinessPlace.objects.filter(place_user_id=user_id)
         p = Paginator(places, 10)
@@ -373,7 +614,8 @@ def index(request):
             page_obj = p.page(1)
         except EmptyPage:
             page_obj = p.page(p.num_pages)
-        context = {'places': page_obj}
+        context = {'places': page_obj,
+                   'place_use': place_use[0], "place_use_nagative": place_use[-1]}
         return render(request, 'index.html', context)
 
 
@@ -381,6 +623,96 @@ def logout_user(request):
     logout(request)
     messages.success(request, "ออกจากระบบแล้ว.")
     return redirect("/",)
+
+
+def getTotalPaymentValid(request):
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT sum(price) as total_payment_valid
+            FROM PLANTRIPDB.Payment
+            WHERE payment_status = True
+            ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchone()
+
+    for row in data_read:
+        data_list.append({
+            "total_payment_valid": row,
+        })
+    return data_list[0]
+
+
+def getCountPayment(request):
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT count(*) as count_payment
+            FROM PLANTRIPDB.Payment
+            ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchone()
+
+    for row in data_read:
+        data_list.append({
+            "count_payment": row,
+        })
+    return data_list[0]
+
+
+def getCountPaymentIsNCheck(request):
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT count(price) as count_payment_isn_check
+            FROM PLANTRIPDB.Payment
+            WHERE payment_status = False
+            ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchone()
+
+    for row in data_read:
+        data_list.append({
+            "count_payment_isn_check": row,
+        })
+    return data_list[0]
+
+
+def getCountPaymentIsCheck(request):
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT count(price) as count_payment_isn_check
+            FROM PLANTRIPDB.Payment
+            WHERE payment_status = True
+            ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchone()
+
+    for row in data_read:
+        data_list.append({
+            "count_payment_is_check": row,
+        })
+    return data_list[0]
+
+
+@login_required
+def index_admin(request):
+    totalPaymentValid = getTotalPaymentValid(request)
+    countPayment = getCountPayment(request)
+    countPaymentIsNCheck = getCountPaymentIsNCheck(request)
+    countPaymentIsCheck = getCountPaymentIsCheck(request)
+    context = {
+        'totalPaymentValid': totalPaymentValid['total_payment_valid'],
+        'countPaymentValid': countPayment['count_payment'],
+        'countPaymentIsCheck': countPaymentIsCheck['count_payment_is_check'],
+        'countPaymentIsNCheck': countPaymentIsNCheck['count_payment_isn_check']
+    }
+    return render(request, 'index_admin.html', context)
 
 
 def index_login(request):
@@ -394,8 +726,8 @@ def index_login(request):
             if request.user.is_authenticated:
                 user = request.user
             if user.is_staff:
-                admin_login_url = reverse('admin:login')
-                return redirect(admin_login_url)
+                # admin_login_url = reverse('admin:login')
+                return redirect('/test/index_admin/')
             elif user.groups.filter(name="business").exists():
                 messages.success(request, 'ยินดีตอนรับสู่ PlanTrip')
                 return redirect('/test/index_business/')

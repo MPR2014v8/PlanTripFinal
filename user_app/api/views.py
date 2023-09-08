@@ -22,8 +22,9 @@ def home_view(request):
     if request.user.is_authenticated:
         user = request.user
         if user.is_staff:
-            admin_login_url = reverse('admin:login')
-            return redirect(admin_login_url)
+            # admin_login_url = reverse('admin:login')
+            # return redirect(admin_login_url)
+            return redirect('/test/index_admin/')
         elif user.groups.filter(name="business").exists():
             return redirect('/test/index_business/')
         else:

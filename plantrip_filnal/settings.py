@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'django.contrib.humanize',
-    # 'django.contrib.messages',
 
     'user_app',
     'payment_app',

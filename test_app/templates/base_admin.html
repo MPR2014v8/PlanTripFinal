@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>หน้าหลัก</title>
 
     <!-- bootstrap CND -->
     <link
@@ -76,7 +76,7 @@
         <h1 class="text-white logo">
           Plan<span class="text-primary">Trip</span>
         </h1>
-        สำหรับผู้ประกอบการ
+        สำหรับผู้ดูแลระบบ
         <hr />
         <ul class="menu">
           <li class="menu-item" id="homepage">
@@ -85,18 +85,8 @@
             >
           </li>
           <li class="menu-item" id="editProfileUser">
-            <a id="id_home" class="class_link" href="{% url 'test:test_update_profile' %}"
-              >จัดโปรไฟล์</a
-            >
-          </li>
-          <li class="menu-item" id="managePayment">
-            <a id="id_home" class="class_link" href="{% url 'test:test_index_payment' %}"
-              >จัดการค่าชำระบริการ</a
-            >
-          </li>
-          <li class="menu-item" id="report">
-            <a id="id_home" class="class_link" href="{% url 'test:test_report_business' %}"
-              >รายงาน</a
+            <a id="id_home" class="class_link" href="{% url 'admin:login' %}"
+              >จัดการข้อมูล</a
             >
           </li>
           <li class="menu-item" id="logout">

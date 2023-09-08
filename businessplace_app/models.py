@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 
 class BusinessType(models.Model):
     name = models.CharField(max_length=60)
-    detaill = models.TextField(null=True, blank=True)
+    detail = models.TextField(null=True, blank=True)
     
     class Meta:
         db_table = 'BusinessType'
@@ -102,8 +102,8 @@ class VirtualTour(models.Model):
 class RatingAndComment(models.Model):
     score = models.IntegerField(default=1)
     comment = models.TextField(null=True, blank=True)
-    created_datetime = models.DateTimeField(auto_now_add=True)
-    change_datetime = models.DateTimeField(default=datetime.datetime.now())
+    created_datetime = models.DateTimeField(default=datetime.datetime.now(), null=True, blank=True)
+    change_datetime = models.DateTimeField(default=datetime.datetime.now(), null=True, blank=True)
 
     place = models.ForeignKey(
         BusinessPlace, on_delete=models.CASCADE, related_name="placeRac")
@@ -116,17 +116,3 @@ class RatingAndComment(models.Model):
     def __str__(self):
         return str(self.score) + " | " + str(self.place.name) + " | " + str(self.user.username)
     
-# class checkInLocationPlace(models.Model):
-#     name = models.CharField(max_length=50)
-#     detail = models.CharField(max_length=50)
-#     lat = models.DecimalField(
-#         max_digits=9, decimal_places=6, null=True, blank=True)
-#     lng = models.DecimalField(
-#         max_digits=9, decimal_places=6, null=True, blank=True)
-    
-#     place = models.ForeignKey(
-#         BusinessPlace, on_delete=models.CASCADE, related_name="place")
-#     user = models.ForeignKey(
-#         User, on_delete=models.CASCADE, related_name="rac_user")
-#     def __str__(self):
-#         return self.name + " | " + self.detail

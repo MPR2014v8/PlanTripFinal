@@ -1,6 +1,6 @@
-{% extends "base_test.html" %} {% block title %}หนัาหลัก{% endblock title %} {% block content %}
+{% extends "base_test.html" %} {% block title %}รายงาน{% endblock title %} {% block content %}
 <header class="page-header">
-  <h2>หนัาหลัก</h2>
+  <h2>รายงาน</h2>
 </header>
 
 <div class="dashboard-cards">
@@ -29,18 +29,11 @@
   </div>
 </div>
 
-<div class="col-md-12 p-2">
-  <span
-    ><a href="{% url 'test:test_addnew' %}" class="btn btn-primary"
-      >เพิ่มกิจการ</a
-    ></span
-  >
-</div>
 <form
   class="d-flex p-2"
   role="search"
   method="POST"
-  action="{% url 'test:test_index' %}"
+  action="{% url 'test:test_report_business' %}"
 >
   {% csrf_token %}
   <input
@@ -62,8 +55,7 @@
       <th>ชื่อกิจการ</th>
       <th>อำเภอ</th>
       <th>ประเภท</th>
-      <th>แก้ไขกิจการ</th>
-      <th>ลบกิจการ</th>
+      <th>ดูรายงาน</th>
     </thead>
     <tbody>
       {% for place in places%}
@@ -75,18 +67,10 @@
 
         <td>
           <a
-            href="{% url 'test:test_edit' pk=place.id %}"
-            class="btn btn-warning btn-sm btn-block"
-            name="confirm_delete"
-            >แก้ไข</a
-          >
-        </td>
-        <td>
-          <a
-            href="{% url 'test:test_delete' pk=place.id %}"
-            class="btn btn-danger btn-sm btn-block btndel"
-            onclick="return confirm('ยืนการลบกิจการ?')"
-            >ลบ</a
+            href="{% url 'test:test_open_report_business' pk=place.id %}"
+            class="btn btn-success btn-sm btn-block"
+            name="open_report"
+            >ดู</a
           >
         </td>
       </tr>
@@ -96,8 +80,8 @@
 </div>
 <center class="p-2">
   {%if places.has_previous %}
-  <a href="?page={{places.previous_page_number}}"><</a>
-  {% endif %} <span>{{places.number}}</span>
+  <a href="?page={{places.previous_page_number}}"><</a> {% endif %}
+  <span>{{places.number}}</span>
   {%if places.has_next %}
   <a href="?page={{places.next_page_number}}">></a>
   {% endif %}

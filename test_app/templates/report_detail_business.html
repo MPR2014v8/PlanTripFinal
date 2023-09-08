@@ -1,0 +1,107 @@
+{% extends "base_test.html" %} {% block title %}รายงาน{% endblock title %} {% block content %}
+<header class="page-header">
+  <h2>รายงาน</h2>
+</header>
+
+<div class="dashboard-cards">
+  <div class="card">
+    <div
+      class="card-body text-white rounded-bottom"
+      style="background-color: #053b50"
+    >
+      <h5 class="card-title">กิจการการยอดนิยมสูงสุด</h5>
+      <p class="card-text">
+        {{place_use.place_name}} | ถูกนำไปจัดทริป {{ place_use.count_use_place }} ครั้ง
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div
+      class="card-body text-white rounded-bottom"
+      style="background-color: #176B87"
+    >
+      <h5 class="card-title">กิจการการยอดนิยมต่ำสุด</h5>
+      <p class="card-text">
+        {{place_use_nagative.place_name}} | ถูกนำไปจัดทริป {{ place_use_nagative.count_use_place }} ครั้ง
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div
+      class="card-body text-white rounded-bottom"
+      style="background-color: #64CCC5"
+    >
+      <h5 class="card-title">กิจการการที่คะแนนสูงสุด</h5>
+      <p class="card-text">
+        {{place_score.name}} | {{ place_score.score_place }} แต้ม
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div
+      class="card-body text-white rounded-bottom"
+      style="background-color: #e49393"
+    >
+      <h5 class="card-title">กิจการการที่คะแนนต่ำสุด</h5>
+      <p class="card-text">
+        {{place_score_nagative.name}} | {{ place_score_nagative.score_place }} แต้ม
+      </p>
+    </div>
+  </div>
+</div>
+
+<form
+  class="d-flex p-2"
+  role="search"
+  method="POST"
+  action="{% url 'test:test_report_business' %}"
+>
+  {% csrf_token %}
+  <input
+    class="form-control me-2"
+    type="search"
+    placeholder="ชื่อกิจการ"
+    name="search_query"
+  />
+  <button class="btn btn-outline-success" type="submit">ค้นหา</button>
+</form>
+<div class="table-responsive p-2">
+  <table
+    id="id_tblbussinessplace"
+    class="table table-striped table-bordered"
+    width="100%"
+  >
+    <thead>
+      <th>รหัส</th>
+      <th>วันที่</th>
+      <th>คะแนน</th>
+      <th>ความคิดเห็น</th>
+      <th>กิจการ</th>
+      <th>ผู้ใช้</th>
+    </thead>
+    <tbody>
+      {% for place in places%}
+      <tr>
+        <td>{{ place.rac_id }}</td>
+        <td>{{ place.created_datetime }}</td>
+        <td>{{ place.score }}</td>
+        <td>{{ place.comment }}</td>
+        <td>{{ place.name_place }}</td>
+        <td>{{ place.username }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<center class="p-2">
+  {%if places.has_previous %}
+  <a href="?page={{places.previous_page_number}}"><</a> {% endif %}
+  <span>{{places.number}}</span>
+  {%if places.has_next %}
+  <a href="?page={{places.next_page_number}}">></a>
+  {% endif %}
+</center>
+{% endblock content %}

@@ -1,0 +1,33 @@
+{% extends "base_admin.html" %} {% block title %}หนัาหลัก{% endblock title %} {% block content %}
+<header class="page-header">
+  <h2>Dashboard</h2>
+</header>
+
+<div class="dashboard-cards">
+    <div class="card">
+      <div class="card-body text-white rounded-bottom" style="background-color: #053B50;">
+        <h5 class="card-title">ยอดรวมชำระค่าบริการ</h5>
+        <p class="card-text">{{ totalPaymentValid }} บาท</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body text-white rounded-bottom" style="background-color: #176B87;">
+        <h5 class="card-title">จำนวนการชำระค่าบริการ</h5>
+        <p class="card-text">{{ countPaymentValid }} การชำระ</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body text-white rounded-bottom" style="background-color: #64CCC5;">
+        <h5 class="card-title">การชำระค่าบริการที่ตรวจสอบแล้ว</h5>
+        <p class="card-text">{{ countPaymentIsCheck }} การชำระ</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body text-white rounded-bottom" style="background-color: #E49393;">
+        <h5 class="card-title">การชำระค่าบริการที่ยังไม่ตรวจสอบ</h5>
+        <p class="card-text">{{ countPaymentIsNCheck }} การชำระ</p>
+      </div>
+    </div>
+</div>
+
+{% endblock content %}
