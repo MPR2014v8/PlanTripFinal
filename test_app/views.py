@@ -34,6 +34,149 @@ from payment_app.models import Payment
 from django.urls import reverse_lazy
 import googlemaps
 
+from trip_app.models import Trip
+
+def getSorPlacetWithUsePlace(request):
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT 
+                count(*) as count_use_place,
+                p.id as place_id, 
+                p.name as place_name, 
+                p.detail, 
+                lat, 
+                lng, 
+                district,
+                address, 
+                timeOpen, 
+                timeClose, 
+                website,
+                type_id, 
+                bt.name as type_name,
+                place_user_id, 
+                au.username, 
+                au.email,
+                pic1, 
+                pic2, 
+                pic3, 
+                vr, 
+                minPrice, 
+                maxPrice
+            FROM PLANTRIPDB.TripDetail as td
+            inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+            inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+            INNER JOIN PLANTRIPDB.auth_user as au ON p.place_user_id = au.id 
+            INNER JOIN PLANTRIPDB.BusinessType as bt ON p.type_id = bt.id  
+            group by place_id
+            order by count_use_place desc
+            ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+        print(data_read[-1])
+
+    for row in data_read:
+        data_list.append({
+            "count_use_place": str(row[0]),
+            "place_id": str(row[1]),
+            "place_name": str(row[2]),
+            "detail": str(row[3]),
+            "lat": str(row[4]),
+            "lng": str(row[5]),
+            "district": str(row[6]),
+            "address": str(row[7]),
+            "timeOpen": str(row[8]),
+            "timeClose": str(row[9]),
+            "website": str(row[10]),
+            "type_id": str(row[11]),
+            "type_name": str(row[12]),
+            "place_user_id": str(row[13]),
+            "username": str(row[14]),
+            "email": str(row[15]),
+            "pic1": str(row[16]),
+            "pic2": str(row[17]),
+            "pic3": str(row[18]),
+            "vr": str(row[19]),
+            "minPrice": str(row[20]),
+            "maxPrice": str(row[-1]),
+        })
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
+def getSortPlaceWithTripBudget(request, pk):
+    trip = Trip.objects.get(pk=pk)
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT 
+                bp.id as place_id, 
+                bp.name as place_name, 
+                bp.detail, 
+                lat, 
+                lng, 
+                district,
+                address, 
+                timeOpen, 
+                timeClose, 
+                website,
+                type_id, 
+                bt.name as type_name,
+                place_user_id, 
+                au.username, 
+                au.email,
+                pic1, 
+                pic2, 
+                pic3, 
+                vr, 
+                minPrice, 
+                maxPrice
+            FROM PLANTRIPDB.BusinessPlace as bp
+            INNER JOIN PLANTRIPDB.auth_user as au
+                ON bp.place_user_id = au.id 
+            INNER JOIN PLANTRIPDB.BusinessType as bt
+                ON bp.type_id = bt.id  
+            where maxPrice <= {trip.budget}
+            order by maxPrice;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+        print(data_read[-1])
+
+    for row in data_read:
+        data_list.append({
+            "place_id": str(row[0]),
+            "place_name": str(row[1]),
+            "detail": str(row[2]),
+            "lat": str(row[3]),
+            "lng": str(row[4]),
+            "district": str(row[5]),
+            "address": str(row[6]),
+            "timeOpen": str(row[7]),
+            "timeClose": str(row[8]),
+            "website": str(row[9]),
+            "type_id": str(row[10]),
+            "type_name": str(row[11]),
+            "place_user_id": str(row[12]),
+            "username": str(row[13]),
+            "email": str(row[14]),
+            "pic1": str(row[15]),
+            "pic2": str(row[16]),
+            "pic3": str(row[17]),
+            "vr": str(row[18]),
+            "minPrice": str(row[19]),
+            "maxPrice": str(row[-1]),
+        })
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
 
 def getScorePlace(request):
     data_list = []
@@ -148,11 +291,20 @@ def open_report(request, pk):
 @login_required
 def report(request):
     place_use = getCountUsePlace(request)
+    place_score = getScorePlace(request)
     if request.method == 'POST':
         search_query = request.POST['search_query']
         print("search=", search_query)
         places = BusinessPlace.objects.filter(name__contains=search_query)
-        return render(request, "report_business.html", {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1]})
+        if place_score == [] or None:
+            return render(request, "report_business.html",
+                      {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                       })
+        else:
+            return render(request, "report_business.html",
+                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                        'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                        })
     else:
         user_id = request.user.id
         places = BusinessPlace.objects.filter(place_user_id=user_id)
@@ -164,15 +316,22 @@ def report(request):
             page_obj = p.page(1)
         except EmptyPage:
             page_obj = p.page(p.num_pages)
-        context = {'places': page_obj,
-                   'place_use': place_use[0], "place_use_nagative": place_use[-1]}
-        return render(request, 'report_business.html', context)
+        if place_score == [] or None:
+            return render(request, "report_business.html",
+                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                        })
+        else:
+            return render(request, "report_business.html",
+                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                        'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                        })
     
 def get_list_place_with_distance2(request, pk, lat, lng):
     api_key = 'AIzaSyBOtQTtAbg0Rfl7RQ1WPjEjPw6Pg5pu9TA'
     gmaps = googlemaps.Client(key=api_key)
-    lat_start_position = lat
-    lng_start_position = lng
+    lat_start_position = 0.0
+    lng_start_position = 0.0
+
     data_list = []
     list_place_with_distance = []
     with connection.cursor() as cursor:
@@ -214,6 +373,16 @@ def get_list_place_with_distance2(request, pk, lat, lng):
         })
 
     # print(data_list[0]['lat'])
+    
+    try:
+        lat = float(lat)
+        lng = float(lng)
+        lat_start_position = lat
+        lng_start_position = lng
+    except ValueError as e:
+        lat_start_position = p['start_lat']
+        lng_start_position = p['start_lng']
+        print("error: ", e)
 
     # Find shortest path
     for p in data_list:
@@ -598,11 +767,20 @@ def getCountUsePlace(request):
 @login_required
 def index(request):
     place_use = getCountUsePlace(request)
+    place_score = getScorePlace(request)
     if request.method == 'POST':
         search_query = request.POST['search_query']
         print("search=", search_query)
         places = BusinessPlace.objects.filter(name__contains=search_query)
-        return render(request, "index.html", {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1]})
+        if place_score == [] or None:
+            return render(request, "index.html",
+                      {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                       })
+        else:
+            return render(request, "index.html",
+                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                        'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                        })
     else:
         user_id = request.user.id
         places = BusinessPlace.objects.filter(place_user_id=user_id)
@@ -614,9 +792,15 @@ def index(request):
             page_obj = p.page(1)
         except EmptyPage:
             page_obj = p.page(p.num_pages)
-        context = {'places': page_obj,
-                   'place_use': place_use[0], "place_use_nagative": place_use[-1]}
-        return render(request, 'index.html', context)
+        if place_score == [] or None:
+            return render(request, "index.html",
+                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                        })
+        else:
+            return render(request, "index.html",
+                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                        'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                        })
 
 
 def logout_user(request):

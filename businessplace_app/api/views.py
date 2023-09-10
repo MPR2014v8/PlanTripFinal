@@ -23,7 +23,7 @@ def get_list_place(request):
                 bp.id as place_id, bp.name as place_name, detail, lat, lng, district,
                 address, timeOpen, timeClose, website,
                 type_id, bt.name as type_name,
-                place_user_id, au.username, au.email
+                place_user_id, au.username, au.email,
                 pic1, pic2, pic3, vr
             FROM PLANTRIPDB.BusinessPlace as bp
             INNER JOIN PLANTRIPDB.auth_user as au

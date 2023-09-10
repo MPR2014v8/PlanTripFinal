@@ -19,11 +19,35 @@
   <div class="card">
     <div
       class="card-body text-white rounded-bottom"
-      style="background-color: #e49393"
+      style="background-color: #176B87"
     >
-      <h5 class="card-title">กิจการการยอดนิยมสูงสุดต่ำสุด</h5>
+      <h5 class="card-title">กิจการการยอดนิยมต่ำสุด</h5>
       <p class="card-text">
         {{place_use_nagative.place_name}} | ถูกนำไปจัดทริป {{ place_use_nagative.count_use_place }} ครั้ง
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div
+      class="card-body text-white rounded-bottom"
+      style="background-color: #64CCC5"
+    >
+      <h5 class="card-title">กิจการการที่คะแนนสูงสุด</h5>
+      <p class="card-text">
+        {{place_score.name}} | {{ place_score.score_place }} แต้ม
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div
+      class="card-body text-white rounded-bottom"
+      style="background-color: #e49393"
+    >
+      <h5 class="card-title">กิจการการที่คะแนนต่ำสุด</h5>
+      <p class="card-text">
+        {{place_score_nagative.name}} | {{ place_score_nagative.score_place }} แต้ม
       </p>
     </div>
   </div>

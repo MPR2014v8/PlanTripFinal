@@ -28,7 +28,10 @@ urlpatterns = [
     path('update_profile/', update_profile, name='test_update_profile'),
     
     path('get_place_distance/<int:pk>/', get_list_place_with_distance, name='test_get_place_distance'),
-    path('get_place_distance2/<int:pk>,<int:lat>,<int:lng>/', get_list_place_with_distance2, name='test_get_place_distance2'),
+    path('get_place_distance2/<int:pk>/<path:lat>/<path:lng>/', get_list_place_with_distance2, name='test_get_place_distance2'),
+    path('get_sortPlace_with_tripBudget/<int:pk>/', getSortPlaceWithTripBudget, name='test_get_sortPlace_with_tripBudget'),
+    path('get_sortPlace_with_usePlace/', getSorPlacetWithUsePlace, name='test_get_sortPlace_with_usePlace'),
+    
     path('report_business/', report, name='test_report_business'),
     path('report_business/<int:pk>/', open_report, name='test_open_report_business'),
 ]
