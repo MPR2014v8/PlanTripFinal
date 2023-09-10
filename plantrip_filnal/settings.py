@@ -26,11 +26,11 @@ SECRET_KEY = 'django-insecure-$4h%^d=(%gl&%e^x+z1o1*9e(t^%7ty1_yney1@6a%&29hib9-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = False
-ALLOWED_HOSTS = ['localhost', 'plantrip-final-f854bbde88de.herokuapp.com']
+# DEBUG = False
+# ALLOWED_HOSTS = ['localhost', 'plantrip-final-f854bbde88de.herokuapp.com']
 
-# DEBUG = True
-# ALLOWED_HOSTS = []
+DEBUG = True
+ALLOWED_HOSTS = []
 
 
 # Application definition

@@ -336,23 +336,26 @@ def get_list_place_with_distance2(request, pk, lat, lng):
     list_place_with_distance = []
     with connection.cursor() as cursor:
         sql = f"""
-            SELECT  
-                td.id as trip_detail_id,
-                trip_id,
-                t.name as trip_name,
-                position_start,
-                position_end,
-                place_id,
-                p.name as place_name,
-                p.lat,
-                p.lng,
-                d.lat as start_lat,
-                d.lng as start_lng
-            FROM PLANTRIPDB.TripDetail as td
-            inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
-            inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
-            inner join PLANTRIPDB.District as d on position_start = d.name
-            where trip_id = {pk};
+        SELECT  
+            td.id as trip_detail_id,
+            trip_id,
+            t.name as trip_name,
+            position_start,
+            position_end,
+            place_id,
+            p.name as place_name,
+            p.lat,
+            p.lng,
+            d.lat as start_lat,
+            d.lng as start_lng,
+            p.minPrice,
+            p.maxPrice,
+            chkIn
+        FROM PLANTRIPDB.TripDetail as td
+        inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+        inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+        inner join PLANTRIPDB.District as d on position_start = d.name
+        where trip_id = {pk};
         """
         cursor.execute(sql)
         data_read = cursor.fetchall()
@@ -369,10 +372,11 @@ def get_list_place_with_distance2(request, pk, lat, lng):
             "lat": str(row[7]),
             "lng": str(row[8]),
             "start_lat": str(row[9]),
-            "start_lng": str(row[-1]),
+            "start_lng": str(row[10]),
+            "minPrice": str(row[11]),
+            "maxPrice": str(row[12]),
+            "chkIn": str(row[-1]),
         })
-
-    # print(data_list[0]['lat'])
     
     try:
         lat = float(lat)
@@ -404,7 +408,11 @@ def get_list_place_with_distance2(request, pk, lat, lng):
                 'place_name': p['place_name'],
                 'lat': p['lat'],
                 'lng': p['lng'],
-                'distance': distance_meters / 1000
+                'distance': distance_meters / 1000,
+                'minPrice': p['minPrice'],
+                'maxPrice': p['maxPrice'],
+                'chkIn': p['chkIn'],
+                
             }
         )
     sorted_list_descending = sorted(
