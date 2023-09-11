@@ -32,6 +32,9 @@ urlpatterns = [
     path('get_sortPlace_with_tripBudget/<int:pk>/', getSortPlaceWithTripBudget, name='test_get_sortPlace_with_tripBudget'),
     path('get_sortPlace_with_usePlace/', getSorPlacetWithUsePlace, name='test_get_sortPlace_with_usePlace'),
     
+    path('get_sortTrip_with_useTrip/', getSorTriptWithUseTrip, name='test_get_sortTrip_with_useTrip'),
+    path('get_sortTrip_with_tripBudget/<path:budget>/', getSorTriptWithtripBudget, name='test_get_sortTrip_with_tripBudget'),
+    
     path('report_business/', report, name='test_report_business'),
     path('report_business/<int:pk>/', open_report, name='test_open_report_business'),
 ]

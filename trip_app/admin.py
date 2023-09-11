@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from trip_app.models import Trip, TripDetail
+from trip_app.models import Trip, TripClone, TripDetail
 
 # Register your models here.
 class TripAdmin(admin.ModelAdmin):
@@ -27,3 +27,4 @@ class TripDetailAdmin(admin.ModelAdmin):
     
 admin.site.register(Trip, TripAdmin)
 admin.site.register(TripDetail, TripDetailAdmin)
+admin.site.register(TripClone)

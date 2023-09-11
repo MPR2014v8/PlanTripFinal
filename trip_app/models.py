@@ -45,3 +45,14 @@ class TripDetail(models.Model):
     
     def __str__(self) :
         return str(self.place.name) + " | " + str(self.trip.name) + " | "
+
+class TripClone(models.Model):
+    tripMain = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name="tripMain")
+    tripClone = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name="tripClone")
+    date_create = models.DateField(null=True, blank=True, auto_created=True, default=datetime.datetime.now())
+    
+    class Meta:
+        db_table = 'TripClone'
+    
+    def __str__(self) :
+        return "tripMain:" + str(self.tripMain.id) + " | tripClone:" + str(self.tripClone.id) + " | "

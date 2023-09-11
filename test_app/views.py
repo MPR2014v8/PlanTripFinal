@@ -36,6 +36,98 @@ import googlemaps
 
 from trip_app.models import Trip
 
+def getSorTriptWithtripBudget(request, budget):
+    data_list = []
+    bg = 0.0
+    try:
+        bg = float(budget)
+    except ValueError as e:
+        bg = 0.0
+        print("error: ", e)
+
+    
+    with connection.cursor() as cursor:
+        sql = f"""
+            select 
+                t.id,
+                t.name,
+                t.position_start,
+                t.position_end,
+                t.budget,
+                username,
+                pic1
+            from PLANTRIPDB.TripDetail as td
+            inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+            inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+            inner join PLANTRIPDB.auth_user as u on t.user_id = u.id
+            where t.budget <= {bg}
+            group by trip_id
+            order by t.budget
+            ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+
+    for row in data_read:
+        data_list.append({
+            "id": str(row[0]),
+            "name": str(row[1]),
+            "position_start": str(row[2]),
+            "position_end": str(row[3]),
+            "budget": str(row[4]),
+            "username": str(row[5]),
+            "pic1": str(row[-1]),
+        })
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
+def getSorTriptWithUseTrip(request):
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+        select 
+            count(*) as count_use, 
+            tc.tripClone_id, 
+            t.name, 
+            t.position_start, 
+            t.position_end, 
+            t.budget, 
+            username,
+            pic1
+        from PLANTRIPDB.TripClone as tc
+        inner join PLANTRIPDB.Trip as t on tc.tripClone_id = t.id
+        inner join PLANTRIPDB.TripDetail as td on td.trip_id = tc.tripClone_id
+        inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+        inner join PLANTRIPDB.auth_user as u on t.user_id = u.id
+        group by tc.tripClone_id 
+        order by count_use desc
+        ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+
+    for row in data_read:
+        data_list.append({
+            "count_use": str(row[0]),
+            "tripClone_id": str(row[1]),
+            "name": str(row[2]),
+            "position_start": str(row[3]),
+            "position_end": str(row[4]),
+            "budget": str(row[5]),
+            "username": str(row[6]),
+            "pic1": str(row[-1]),
+        })
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
 def getSorPlacetWithUsePlace(request):
     data_list = []
     with connection.cursor() as cursor:
