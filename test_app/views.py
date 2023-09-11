@@ -76,7 +76,7 @@ def getSorTriptWithtripBudget(request, budget):
             "position_end": str(row[3]),
             "budget": str(row[4]),
             "username": str(row[5]),
-            "pic1": str(row[-1]),
+            "pic1": str("https://plantripbucket.s3.amazonaws.com/"+row[-1]),
         })
 
     json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
@@ -119,7 +119,7 @@ def getSorTriptWithUseTrip(request):
             "position_end": str(row[4]),
             "budget": str(row[5]),
             "username": str(row[6]),
-            "pic1": str(row[-1]),
+            "pic1": str("https://plantripbucket.s3.amazonaws.com/"+row[-1]),
         })
 
     json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
