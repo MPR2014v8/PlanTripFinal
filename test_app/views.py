@@ -36,6 +36,64 @@ import googlemaps
 
 from trip_app.models import Trip
 
+def getListTripDetailClone(request, pk):
+    data_list = []
+    
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT 
+                td.id as id_trip_detail,
+                place_id,
+                p.name as place_name,
+                lat,
+                lng,
+                minPrice,
+                maxPrice,
+                pic1,
+                trip_id,
+                t.name as trip_name,
+                t.budget as trip_budget,
+                t.detail as trip_detail,
+                t.position_start,
+                t.position_end,
+                user_id,
+                username
+            FROM PLANTRIPDB.TripDetail as td
+            inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+            inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+            inner join PLANTRIPDB.auth_user as u on u.id = user_id
+            where t.id = {pk}
+            ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+
+    for row in data_read:
+        data_list.append({
+            "id_trip_detail": str(row[0]),
+            "place_id": str(row[1]),
+            "place_name": str(row[2]),
+            "lat": str(row[3]),
+            "lng": str(row[4]),
+            "minPrice": str(row[5]),
+            "maxPrice": str(row[6]),
+            "pic1": str("https://plantripbucket.s3.amazonaws.com/"+row[7]),
+            "trip_id": str(row[8]),
+            "trip_name": str(row[9]),
+            "trip_budget": str(row[10]),
+            "trip_detail": str(row[11]),
+            "position_start": str(row[12]),
+            "position_end": str(row[13]),
+            "user_id": str(row[14]),
+            "username": str(row[-1]),
+        })
+ 
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
 def getSorTriptWithtripBudget(request, budget):
     data_list = []
     bg = 0.0
@@ -78,7 +136,7 @@ def getSorTriptWithtripBudget(request, budget):
             "username": str(row[5]),
             "pic1": str("https://plantripbucket.s3.amazonaws.com/"+row[-1]),
         })
-
+ 
     json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
     response = HttpResponse(
         json_data, content_type='application/json; charset=utf-8')
