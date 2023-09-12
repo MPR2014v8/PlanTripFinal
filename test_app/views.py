@@ -61,7 +61,8 @@ class TripCloneViewAV(APIView):
             )
 
             newTrip.save()
-            # addTripCloneDetail(newTrip.id, pkClone)
+            print("new trip id: " + str(newTrip.id))
+            addTripCloneDetail(request, newTrip.id, pkClone)
         except Exception as e:
             print("Error saving trip clone: " + str(e))
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -130,9 +131,15 @@ def addTripCloneDetail(request, pkMain, pkClone):
                 """
                 cursor.execute(sql)
     except Exception as e:
-        print("Error addTripClone: " + str(e))
+        print("Error addTripDetailClone: " + str(e))
 
-    print("Success addTripClone.")
+    print("Success addTripDetailClone.")
+    
+    json_data = json.dumps(data_list_clone, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
 
 
 def getListTripDetailClone(request, pk):
