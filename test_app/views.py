@@ -36,9 +36,47 @@ import googlemaps
 
 from trip_app.models import Trip
 
+
+def addTripClone(request, pkMain, pkClone):
+    data_list_clone = []
+    try:
+        with connection.cursor() as cursor:
+            sql = f"""
+                select 
+                    td.id as tripDetailCloneID,
+                    place_id,
+                    td.trip_id as tripCloneID
+                from PLANTRIPDB.TripDetail as td
+                inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+                where t.id = {pkClone}
+                ;
+            """
+            cursor.execute(sql)
+            data_read = cursor.fetchall()
+
+            for row in data_read:
+                data_list_clone.append({
+                    "tripDetailCloneID": str(row[0]),
+                    "place_id": str(row[1]),
+                    "tripCloneID": str(row[-1]),
+                })
+
+            for row in data_list_clone:
+                sql = f"""
+                    insert into PLANTRIPDB.TripDetail (place_id, trip_id, chkIn)
+                    value ({row['place_id']}, {pkMain}, 0)
+                    ;
+                """
+                cursor.execute(sql)
+    except Exception as e:
+        print("Error addTripClone: " + str(e))
+    
+    print("Success addTripClone.")
+    
+
 def getListTripDetailClone(request, pk):
     data_list = []
-    
+
     with connection.cursor() as cursor:
         sql = f"""
             SELECT 
@@ -87,12 +125,13 @@ def getListTripDetailClone(request, pk):
             "user_id": str(row[14]),
             "username": str(row[-1]),
         })
- 
+
     json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
     response = HttpResponse(
         json_data, content_type='application/json; charset=utf-8')
 
     return response
+
 
 def getSorTriptWithtripBudget(request, budget):
     data_list = []
@@ -103,7 +142,6 @@ def getSorTriptWithtripBudget(request, budget):
         bg = 0.0
         print("error: ", e)
 
-    
     with connection.cursor() as cursor:
         sql = f"""
             select 
@@ -136,12 +174,13 @@ def getSorTriptWithtripBudget(request, budget):
             "username": str(row[5]),
             "pic1": str("https://plantripbucket.s3.amazonaws.com/"+row[-1]),
         })
- 
+
     json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
     response = HttpResponse(
         json_data, content_type='application/json; charset=utf-8')
 
     return response
+
 
 def getSorTriptWithUseTrip(request):
     data_list = []
@@ -185,6 +224,7 @@ def getSorTriptWithUseTrip(request):
         json_data, content_type='application/json; charset=utf-8')
 
     return response
+
 
 def getSorPlacetWithUsePlace(request):
     data_list = []
@@ -258,6 +298,7 @@ def getSorPlacetWithUsePlace(request):
 
     return response
 
+
 def getSortPlaceWithTripBudget(request, pk):
     trip = Trip.objects.get(pk=pk)
     data_list = []
@@ -328,6 +369,7 @@ def getSortPlaceWithTripBudget(request, pk):
 
     return response
 
+
 def getScorePlace(request):
     data_list = []
     try:
@@ -352,9 +394,8 @@ def getScorePlace(request):
 
     except Exception as e:
         print("Error: ", e)
-        
+
     return data_list
-    
 
 
 def getRacPlace(request, pk):
@@ -406,16 +447,16 @@ def open_report(request, pk):
         search_query = request.POST['search_query']
         print("search=", search_query)
         places = BusinessPlace.objects.filter(name__contains=search_query)
-        
+
         if place_score == [] or None:
             return render(request, "report_detail_business.html",
-                      {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                       })
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                           })
         else:
             return render(request, "report_detail_business.html",
-                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                        'place_score': place_score[0], "place_score_nagative": place_score[-1]
-                        })
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                           'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                           })
     else:
         places = getRacPlace(request, pk)
         p = Paginator(places, 10)
@@ -426,16 +467,16 @@ def open_report(request, pk):
             page_obj = p.page(1)
         except EmptyPage:
             page_obj = p.page(p.num_pages)
-    
+
         if place_score == [] or None:
             return render(request, "report_detail_business.html",
-                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                        })
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                           })
         else:
             return render(request, "report_detail_business.html",
-                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                        'place_score': place_score[0], "place_score_nagative": place_score[-1]
-                        })
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                           'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                           })
 
 
 @login_required
@@ -448,13 +489,13 @@ def report(request):
         places = BusinessPlace.objects.filter(name__contains=search_query)
         if place_score == [] or None:
             return render(request, "report_business.html",
-                      {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                       })
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                           })
         else:
             return render(request, "report_business.html",
-                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                        'place_score': place_score[0], "place_score_nagative": place_score[-1]
-                        })
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                           'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                           })
     else:
         user_id = request.user.id
         places = BusinessPlace.objects.filter(place_user_id=user_id)
@@ -468,14 +509,15 @@ def report(request):
             page_obj = p.page(p.num_pages)
         if place_score == [] or None:
             return render(request, "report_business.html",
-                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                        })
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                           })
         else:
             return render(request, "report_business.html",
-                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                        'place_score': place_score[0], "place_score_nagative": place_score[-1]
-                        })
-    
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                           'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                           })
+
+
 def get_list_place_with_distance2(request, pk, lat, lng):
     api_key = 'AIzaSyBOtQTtAbg0Rfl7RQ1WPjEjPw6Pg5pu9TA'
     gmaps = googlemaps.Client(key=api_key)
@@ -527,7 +569,7 @@ def get_list_place_with_distance2(request, pk, lat, lng):
             "maxPrice": str(row[12]),
             "chkIn": str(row[-1]),
         })
-    
+
     try:
         lat = float(lat)
         lng = float(lng)
@@ -562,7 +604,7 @@ def get_list_place_with_distance2(request, pk, lat, lng):
                 'minPrice': p['minPrice'],
                 'maxPrice': p['maxPrice'],
                 'chkIn': p['chkIn'],
-                
+
             }
         )
     sorted_list_descending = sorted(
@@ -574,6 +616,7 @@ def get_list_place_with_distance2(request, pk, lat, lng):
         json_data, content_type='application/json; charset=utf-8')
 
     return response
+
 
 def get_list_place_with_distance(request, pk):
     api_key = 'AIzaSyBOtQTtAbg0Rfl7RQ1WPjEjPw6Pg5pu9TA'
@@ -932,13 +975,13 @@ def index(request):
         places = BusinessPlace.objects.filter(name__contains=search_query)
         if place_score == [] or None:
             return render(request, "index.html",
-                      {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                       })
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                           })
         else:
             return render(request, "index.html",
-                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                        'place_score': place_score[0], "place_score_nagative": place_score[-1]
-                        })
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                           'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                           })
     else:
         user_id = request.user.id
         places = BusinessPlace.objects.filter(place_user_id=user_id)
@@ -952,13 +995,13 @@ def index(request):
             page_obj = p.page(p.num_pages)
         if place_score == [] or None:
             return render(request, "index.html",
-                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                        })
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                           })
         else:
             return render(request, "index.html",
-                        {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                        'place_score': place_score[0], "place_score_nagative": place_score[-1]
-                        })
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                           'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                           })
 
 
 def logout_user(request):
