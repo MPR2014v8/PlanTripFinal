@@ -61,7 +61,7 @@ class TripCloneViewAV(APIView):
             )
 
             newTrip.save()
-            addTripCloneDetail(newTrip.id, pkClone)
+            # addTripCloneDetail(newTrip.id, pkClone)
         except Exception as e:
             print("Error saving trip clone: " + str(e))
             return Response(status=status.HTTP_400_BAD_REQUEST)
