@@ -37,7 +37,34 @@ import googlemaps
 from trip_app.models import Trip
 
 
-def addTripClone(request, pkMain, pkClone):
+def addTripClone(request, name, detail, position_start, position_end, budget, date_start, date_end, pkClone):
+
+    bg = 0.0
+    try:
+        bg = float(budget)
+    except ValueError:
+        bg = 0.0
+        
+    try:
+        newTrip = Trip(
+            name=name,
+            detail=detail,
+            position_start=position_start,
+            position_end=position_end,
+            budget=bg,
+            date_start=date_start,
+            date_end=date_end
+        )
+
+        newTrip.save()
+        addTripCloneDetail(newTrip.id, pkClone)
+    except Exception as e:
+        print("Error saving trip clone: " + str(e))
+
+    print("Success! saving trip clone")
+
+
+def addTripCloneDetail(request, pkMain, pkClone):
     data_list_clone = []
     try:
         with connection.cursor() as cursor:
@@ -70,9 +97,9 @@ def addTripClone(request, pkMain, pkClone):
                 cursor.execute(sql)
     except Exception as e:
         print("Error addTripClone: " + str(e))
-    
+
     print("Success addTripClone.")
-    
+
 
 def getListTripDetailClone(request, pk):
     data_list = []

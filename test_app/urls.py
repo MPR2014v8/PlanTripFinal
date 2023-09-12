@@ -36,7 +36,11 @@ urlpatterns = [
     path('get_sortTrip_with_tripBudget/<path:budget>/', getSorTriptWithtripBudget, name='test_get_sortTrip_with_tripBudget'),
     path('get_list_trip_detail_clone/<int:pk>/', getListTripDetailClone, name='test_get_list_trip_detail_clone'),
     
-    path('add_create_trip_detail_clone/<int:pkMain>/<int:pkClone>/', addTripClone, name='test_add_create_trip_detail_clone'),
+    path(
+        'add_create_trip_clone/<str:name>/<str:detail>/<str:position_start>/<str:position_end>/<path:budget>/<str:date_start>/<str:date_end>/<int:pkClone>/', 
+        addTripClone, 
+        name='test_add_create_trip_clone'),
+    path('add_create_trip_detail_clone/<int:pkMain>/<int:pkClone>/', addTripCloneDetail, name='test_add_create_trip_detail_clone'),
     
     path('report_business/', report, name='test_report_business'),
     path('report_business/<int:pk>/', open_report, name='test_open_report_business'),
