@@ -34,8 +34,41 @@ from payment_app.models import Payment
 from django.urls import reverse_lazy
 import googlemaps
 
-from trip_app.models import Trip
+from rest_framework.views import APIView
 
+from trip_app.models import Trip
+from rest_framework import status
+
+class TripCloneViewAV(APIView):
+    
+    def post(self, request, name, detail, position_start, position_end, budget, date_start, date_end, pkClone, username):
+        bg = 0.0
+        try:
+            bg = float(budget)
+        except ValueError:
+            bg = 0.0
+            
+        try:
+            newTrip = Trip(
+                name=name,
+                detail=detail,
+                position_start=position_start,
+                position_end=position_end,
+                budget=bg,
+                date_start=date_start,
+                date_end=date_end,
+                user=User.objects.get(username=username)
+            )
+
+            newTrip.save()
+            addTripCloneDetail(newTrip.id, pkClone)
+        except Exception as e:
+            print("Error saving trip clone: " + str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        print("Success! saving trip clone")
+        return Response(status=status.HTTP_201_CREATED)
+    
 
 def addTripClone(request, name, detail, position_start, position_end, budget, date_start, date_end, pkClone, username):
 
