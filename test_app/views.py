@@ -37,7 +37,7 @@ import googlemaps
 from trip_app.models import Trip
 
 
-def addTripClone(request, name, detail, position_start, position_end, budget, date_start, date_end, pkClone, pkUser):
+def addTripClone(request, name, detail, position_start, position_end, budget, date_start, date_end, pkClone, username):
 
     bg = 0.0
     try:
@@ -54,7 +54,7 @@ def addTripClone(request, name, detail, position_start, position_end, budget, da
             budget=bg,
             date_start=date_start,
             date_end=date_end,
-            user=User.objects.get(id=pkUser)
+            user=User.objects.get(username=username)
         )
 
         newTrip.save()
