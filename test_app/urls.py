@@ -35,6 +35,7 @@ urlpatterns = [
     path('get_sortTrip_with_useTrip/', getSorTriptWithUseTrip, name='test_get_sortTrip_with_useTrip'),
     path('get_sortTrip_with_tripBudget/<path:budget>/', getSorTriptWithtripBudget, name='test_get_sortTrip_with_tripBudget'),
     path('get_list_trip_detail_clone/<int:pk>/', getListTripDetailClone, name='test_get_list_trip_detail_clone'),
+    path('get_list_rac_place/<int:pk>/', getListRacPlace, name='test_get_list_rac_place'),
     
     path(
         'add_create_trip_clone/<str:name>/<str:detail>/<str:position_start>/<str:position_end>/<path:budget>/<str:date_start>/<str:date_end>/<int:pkClone>/<str:username>/', 

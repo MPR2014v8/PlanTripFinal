@@ -39,6 +39,39 @@ from rest_framework.views import APIView
 from trip_app.models import Trip
 from rest_framework import status
 
+def getListRacPlace(request, pk):
+    data_list = []
+
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT  
+                id,
+                score,
+                comment,
+                place_id as place,
+                user_id as user
+            FROM PLANTRIPDB.RatingAndComment
+            where place_id = {pk}
+            ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+
+    for row in data_read:
+        data_list.append({
+            "id": str(row[0]),
+            "score": str(row[1]),
+            "comment": str(row[2]),
+            "place": str(row[3]),
+            "user": str(row[4]),
+        })
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
 class TripCloneViewAV(APIView):
     
     def post(self, request, name, detail, position_start, position_end, budget, date_start, date_end, pkClone, username):
@@ -98,7 +131,6 @@ def addTripClone(request, name, detail, position_start, position_end, budget, da
 
     print("Success! saving trip clone")
 
-
 def addTripCloneDetail(request, pkMain, pkClone):
     data_list_clone = []
     try:
@@ -140,7 +172,6 @@ def addTripCloneDetail(request, pkMain, pkClone):
         json_data, content_type='application/json; charset=utf-8')
 
     return response
-
 
 def getListTripDetailClone(request, pk):
     data_list = []
