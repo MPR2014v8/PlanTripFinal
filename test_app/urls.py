@@ -37,7 +37,7 @@ urlpatterns = [
     path('get_list_trip_detail_clone/<int:pk>/', getListTripDetailClone, name='test_get_list_trip_detail_clone'),
     
     path(
-        'add_create_trip_clone/<str:name>/<str:detail>/<str:position_start>/<str:position_end>/<path:budget>/<str:date_start>/<str:date_end>/<int:pkClone>/', 
+        'add_create_trip_clone/<str:name>/<str:detail>/<str:position_start>/<str:position_end>/<path:budget>/<str:date_start>/<str:date_end>/<int:pkClone>/<int:pkUser>/', 
         addTripClone, 
         name='test_add_create_trip_clone'),
     path('add_create_trip_detail_clone/<int:pkMain>/<int:pkClone>/', addTripCloneDetail, name='test_add_create_trip_detail_clone'),
