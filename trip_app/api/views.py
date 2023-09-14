@@ -16,6 +16,49 @@ import json
 from django.db import connection
 from django.http import HttpResponse
 
+def getTripId(request, pk):
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            select 
+                id,
+                name,
+                detail,
+                position_start,
+                position_end,
+                budget,
+                permission,
+                date_start,
+                date_end,
+                user_id as user
+            from PLANTRIPDB.Trip
+            where id = {pk}
+            ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+        print(data_read[0])
+
+    for row in data_read:
+        data_list.append({
+            "id": str(row[0]),
+            "name": str(row[1]),
+            "detail": str(row[2]),
+            "position_start": str(row[3]),
+            "position_end": str(row[4]),
+            "budget": str(row[5]),
+            "permission": str(row[6]),
+            "date_start": str(row[7]),
+            "date_end": str(row[8]),
+            "user": str(row[-1]),
+        })
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
 class TripViewAV(APIView):
     
     def get(self, request):

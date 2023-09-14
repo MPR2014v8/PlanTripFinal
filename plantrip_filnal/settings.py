@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['localhost', 'plantrip-final-f854bbde88de.herokuapp.com']
 # DEBUG = True
 # ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [    

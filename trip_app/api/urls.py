@@ -6,6 +6,9 @@ app_name = 'trip'
 
 urlpatterns = [
     path('trip-all/', TripViewAV.as_view(), name='tripView-all'),
+    
+    path('trip-all/<int:pk>/', getTripId, name='getTripId'),
+    
     path('trip-all-join/', get_list_trip_all, name='tripView-all'),
     path('trip-all-join/<int:pk>/', get_list_trip_all_user, name='tripView-all'),
     
