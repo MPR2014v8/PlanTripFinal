@@ -173,7 +173,8 @@ def get_list_trip_all_user(request, pk):
             inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
             inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
             group by td.trip_id
-            having trip_id = {pk};
+            having trip_id = {pk}
+            ;
         """
         cursor.execute(sql)
         data_read = cursor.fetchall()
