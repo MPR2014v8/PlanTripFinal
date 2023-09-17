@@ -721,9 +721,9 @@ def get_list_place_with_distance2(request, pk, lat, lng, username):
             "maxPrice": str(row[12]),
             "chkIn": str(row[13]),
             "pic1": str("https://plantripbucket.s3.amazonaws.com/"+row[14]),
-            "trip_budget": str("https://plantripbucket.s3.amazonaws.com/"+row[15]),
-            "username": str("https://plantripbucket.s3.amazonaws.com/"+row[16]),
-            "trip_detail": str("https://plantripbucket.s3.amazonaws.com/"+row[-1]),
+            "trip_budget": str(row[15]),
+            "username": str(row[16]),
+            "trip_detail": str(row[-1]),
         })
 
     try:
