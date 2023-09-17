@@ -72,7 +72,7 @@ def getListTripUserAndPic1(request, username):
             "position_end": str(row[3]),
             "budget": str(row[4]),
             "username": str(row[5]),
-            "pic1": str(row[-1]),
+            "pic1": str("https://plantripbucket.s3.amazonaws.com/"+row[-1]),
         })
 
     json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
