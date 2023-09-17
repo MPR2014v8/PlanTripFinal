@@ -51,7 +51,9 @@ def getListTripUserAndPic1(request, username):
                 t.position_end,
                 t.budget,
                 username,
-                pic1
+                pic1,
+                t.date_start,
+                t.date_end
             from PLANTRIPDB.TripDetail as td 
             inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
             inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
