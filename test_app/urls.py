@@ -37,6 +37,8 @@ urlpatterns = [
     path('get_list_trip_detail_clone/<int:pk>/', getListTripDetailClone, name='test_get_list_trip_detail_clone'),
     path('get_list_rac_place/<int:pk>/', getListRacPlace, name='test_get_list_rac_place'),
     
+    path('get_list_trip_user_and_pic1/<str:username>/', getListTripUserAndPic1, name='test_get_list_trip_user_and_pic1'),
+    
     path(
         'add_create_trip_clone/<str:name>/<str:detail>/<str:position_start>/<str:position_end>/<path:budget>/<str:date_start>/<str:date_end>/<int:pkClone>/<str:username>/', 
         TripCloneViewAV.as_view(), 

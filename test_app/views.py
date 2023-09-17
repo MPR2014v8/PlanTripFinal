@@ -39,6 +39,48 @@ from rest_framework.views import APIView
 from trip_app.models import Trip
 from rest_framework import status
 
+def getListTripUserAndPic1(request, username):
+    data_list = []
+
+    with connection.cursor() as cursor:
+        sql = f"""
+            select 
+                t.id,
+                t.name,
+                t.position_start,
+                t.position_end,
+                t.budget,
+                username,
+                pic1
+            from PLANTRIPDB.TripDetail as td 
+            inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+            inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+            inner join PLANTRIPDB.auth_user as u on t.user_id = u.id
+            where username LIKE "{username}"
+            group by td.trip_id 
+            order by t.date_start desc
+            ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+
+    for row in data_read:
+        data_list.append({
+            "id": str(row[0]),
+            "name": str(row[1]),
+            "position_start": str(row[2]),
+            "position_end": str(row[3]),
+            "budget": str(row[4]),
+            "username": str(row[5]),
+            "pic1": str(row[-1]),
+        })
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
 def getListRacPlace(request, pk):
     data_list = []
 
