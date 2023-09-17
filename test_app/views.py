@@ -663,7 +663,7 @@ def report(request):
                            })
 
 
-def get_list_place_with_distance2(request, pk, lat, lng):
+def get_list_place_with_distance2(request, pk, lat, lng, username):
     api_key = 'AIzaSyBOtQTtAbg0Rfl7RQ1WPjEjPw6Pg5pu9TA'
     gmaps = googlemaps.Client(key=api_key)
     lat_start_position = 0.0
@@ -673,7 +673,7 @@ def get_list_place_with_distance2(request, pk, lat, lng):
     list_place_with_distance = []
     with connection.cursor() as cursor:
         sql = f"""
-        SELECT  
+        select 
             td.id as trip_detail_id,
             trip_id,
             t.name as trip_name,
@@ -687,12 +687,16 @@ def get_list_place_with_distance2(request, pk, lat, lng):
             d.lng as start_lng,
             p.minPrice,
             p.maxPrice,
-            chkIn
-        FROM PLANTRIPDB.TripDetail as td
+            chkIn,
+            pic1
+        from PLANTRIPDB.TripDetail as td 
         inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
         inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+        inner join PLANTRIPDB.auth_user as u on t.user_id = u.id
         inner join PLANTRIPDB.District as d on position_start = d.name
-        where trip_id = {pk};
+        where username LIKE "{username}" and td.trip_id = {pk}
+        order by t.date_start desc
+        ;
         """
         cursor.execute(sql)
         data_read = cursor.fetchall()
@@ -712,7 +716,8 @@ def get_list_place_with_distance2(request, pk, lat, lng):
             "start_lng": str(row[10]),
             "minPrice": str(row[11]),
             "maxPrice": str(row[12]),
-            "chkIn": str(row[-1]),
+            "chkIn": str(row[13]),
+            "pic1": str(row[-1]),
         })
 
     try:
