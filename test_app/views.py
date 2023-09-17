@@ -726,8 +726,8 @@ def get_list_place_with_distance2(request, pk, lat, lng, username):
             "trip_detail": str(row[-1]),
         })
 
+    p = data_list[0]
     try:
-        
         lat = float(lat)
         lng = float(lng)
         lat_start_position = lat
