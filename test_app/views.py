@@ -727,10 +727,15 @@ def get_list_place_with_distance2(request, pk, lat, lng, username):
         })
 
     try:
+        
         lat = float(lat)
         lng = float(lng)
         lat_start_position = lat
         lng_start_position = lng
+        
+        if lat == 0.0 or lng == 0.0 :
+            lat_start_position = p['start_lat']
+            lng_start_position = p['start_lng']
     except ValueError as e:
         lat_start_position = p['start_lat']
         lng_start_position = p['start_lng']
