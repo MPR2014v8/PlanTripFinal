@@ -717,7 +717,7 @@ def get_list_place_with_distance2(request, pk, lat, lng, username):
             "minPrice": str(row[11]),
             "maxPrice": str(row[12]),
             "chkIn": str(row[13]),
-            "pic1": str(row[-1]),
+            "pic1": str("https://plantripbucket.s3.amazonaws.com/"+row[-1]),
         })
 
     try:
@@ -754,7 +754,7 @@ def get_list_place_with_distance2(request, pk, lat, lng, username):
                 'minPrice': p['minPrice'],
                 'maxPrice': p['maxPrice'],
                 'chkIn': p['chkIn'],
-
+                "pic1": p['pic1'],
             }
         )
     sorted_list_descending = sorted(
