@@ -16,6 +16,43 @@ import json
 from django.db import connection
 from django.http import HttpResponse
 
+def get_count_trip_detail(request, pk):
+    
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+         SELECT 
+            count(*) as count_trip_detail, 
+            t.id as trip_id
+        FROM PLANTRIPDB.TripDetail as td
+        inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+        where t.id = {pk}
+        group by t.id
+        order by count_trip_detail
+        ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+
+    if data_read is None or len(data_read) <= 0:
+        data_list.append({
+            "count_trip_detail": "0",
+            "trip_id": str(pk),
+        })
+    else:
+        for row in data_read:
+            data_list.append({
+                "count_trip_detail": str(row[0]),
+                "trip_id": str(row[1]),
+            })
+    
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
 def getTripId(request, pk):
     data_list = []
     with connection.cursor() as cursor:
@@ -192,6 +229,59 @@ def get_list_trip_all_user(request, pk):
             "budget": str(row[7]),
             "total_trip": str(row[8]),
             "balance": str(row[-1]),
+        })
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
+def get_list_trip_user_detail_with_username(request, username):
+
+    data_list = []
+    with connection.cursor() as cursor:
+        sql = f"""
+            SELECT 
+                td.id as id_trip_detail,
+                place_id,
+                p.name as place_name,
+                lat,
+                lng,
+                minPrice,
+                maxPrice,
+                trip_id,
+                t.name as trip_name,
+                t.budget as trip_budget,
+                user_id,
+                username,
+                chkIn
+            FROM PLANTRIPDB.TripDetail as td
+            inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
+            inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
+            inner join PLANTRIPDB.auth_user as u on u.id = user_id
+            where username = {username}
+            ;
+        """
+        cursor.execute(sql)
+        data_read = cursor.fetchall()
+        print(data_read[0])
+
+    for row in data_read:
+        data_list.append({
+            "id_trip_detail": str(row[0]),
+            "place_id": str(row[1]),
+            "place_name": str(row[2]),
+            "lat": str(row[3]),
+            "lng": str(row[4]),
+            "minPrice": str(row[5]),
+            "maxPrice": str(row[6]),
+            "trip_id": str(row[7]),
+            "trip_name": str(row[8]),
+            "trip_budget": str(row[9]),
+            "user_id": str(row[10]),
+            "username": str(row[11]),
+            "chkIn": str(row[-1]),
         })
 
     json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
