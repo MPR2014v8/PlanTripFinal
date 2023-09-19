@@ -12,20 +12,22 @@ urlpatterns = [
     path('trip-all-join/', get_list_trip_all, name='tripView-all'),
     path('trip-all-join/<int:pk>/', get_list_trip_all_user, name='tripView-all'),
     
+    path('trip-detail-id-all/<int:id>/', TripDetailIdViewAV.as_view(), name='tripDetailIdView-all'),
+    path('trip-detail-id/<int:id_trip>/<int:id_place>/', TripDetailPlaceAndTripIdViewAV.as_view(), name='tripPlaceAndTripIdView-all'),
+    
     path('trip/', TripSearchView.as_view(), name='tripView'),
+    path('trip/<int:id>/', TripDetailViewAV.as_view(), name='tripDetailView'),
     
     path('trip-user/<str:username>/', TripUserViewAV.as_view(), name='tripUserView'),
     path('trip-user2/<int:pk>/', get_trip_user, name='tripUser2View'),
     
     path('trip-user-id/<int:id>/', TripUserIdViewAV.as_view(), name='tripUserIdView'),
     
+    path('trip-detail-all/', TripDetialPlaceViewAV.as_view(), name='tripDetailPlaceView-all'),
+    
     path('trip-detail-all-join/', get_list_trip_detail, name='tripDetailPlaceView-all'),
     path('trip-detail-all-join/<int:pk>/', get_list_trip_user_detail, name='tripDetailPlaceView-all'),
     
-    path('trip-detail-all-join/<str:username>/', get_list_trip_user_detail, name='trip-detail-all-join-username'),
-    
-    path('trip-detail/', TripDetialViewGetPostAV.as_view(), name='trip-detail-all'),
-    path('trip-detail/<int:id>/', TripDetailViewGetPutDeleteAV.as_view(), name='trip-detail-id'),
-    
-    path('chktrip-detail/<int:pk>/', get_count_trip_detail, name='get_count_trip_detail'),
+    path('trip-detail/', TripDetialPlaceViewAV.as_view(), name='tripDetaiPlacelView'),
+    path('trip-detail/<int:id>/', TripDetailPlacelViewAV.as_view(), name='tripDetailPlaceView'),
 ]
