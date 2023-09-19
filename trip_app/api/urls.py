@@ -30,8 +30,8 @@ urlpatterns = [
     
     path('trip-detail-all-join/<str:username>/', get_list_trip_user_detail, name='trip-detail-all-join-username'),
     
-    path('trip-detail/', TripDetialViewGetPostAV.as_view(), name='tripDetaiPlacelView'),
-    path('trip-detail/<int:id>/', TripDetailViewGetPutDeleteAV.as_view(), name='tripDetailPlaceView'),
+    path('trip-detail/', TripDetialViewGetPostAV.as_view(), name='trip-detail-all'),
+    path('trip-detail/<int:id>/', TripDetailViewGetPutDeleteAV.as_view(), name='trip-detail-id'),
     
     path('chktrip-detail/<int:pk>/', get_count_trip_detail, name='get_count_trip_detail'),
 ]
