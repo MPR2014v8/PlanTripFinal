@@ -776,7 +776,9 @@ def get_list_place_with_distance2(request, pk, lat, lng, username):
             pic1,
             t.budget as trip_budget,
             username,
-            t.detail as trip_detail
+            t.detail as trip_detail,
+            t.date_start,
+            t.date_end
         from PLANTRIPDB.TripDetail as td 
         inner join PLANTRIPDB.Trip as t on td.trip_id = t.id
         inner join PLANTRIPDB.BusinessPlace as p on td.place_id = p.id
@@ -808,7 +810,9 @@ def get_list_place_with_distance2(request, pk, lat, lng, username):
             "pic1": str("https://plantripbucket.s3.amazonaws.com/"+row[14]),
             "trip_budget": str(row[15]),
             "username": str(row[16]),
-            "trip_detail": str(row[-1]),
+            "trip_detail": str(row[17]),
+            "date_start": str(row[18]),
+            "date_end": str(row[-1]),
         })
 
     p = data_list[0]
@@ -854,6 +858,8 @@ def get_list_place_with_distance2(request, pk, lat, lng, username):
                 "trip_budget": p['trip_budget'],
                 "username": p['username'],
                 "trip_detail": p['trip_detail'],
+                "date_start": p['date_start'],
+                "date_end": p['date_end'],
             }
         )
     sorted_list_descending = sorted(
