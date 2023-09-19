@@ -29,5 +29,11 @@ urlpatterns = [
     path('trip-detail-all-join/<int:pk>/', get_list_trip_user_detail, name='tripDetailPlaceView-all'),
     
     path('trip-detail/', TripDetialPlaceViewAV.as_view(), name='tripDetaiPlacelView'),
-    path('trip-detail/<int:id>/', TripDetailPlacelViewAV.as_view(), name='tripDetailPlaceView'),
+    path('trip-detail-id/<int:pk>/', getTripDetailId, name='getTripDetailId'),
+    path('trip-detail-put-delete/<int:id>/', TripDetailPlacelViewAV.as_view(), name='tripDetailPlaceView'),
+    
+    path('chktrip-detail/<int:pk>/', get_count_trip_detail, name='get_count_trip_detail'),
+     
+    path('get_list_trip_user_detail_with_username/<str:username>/', get_list_trip_user_detail_with_username, name='get_list_trip_user_detail_with_username'),
+
 ]

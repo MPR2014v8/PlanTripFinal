@@ -49,5 +49,5 @@ urlpatterns = [
     path('report_business/', report, name='test_report_business'),
     path('report_business/<int:pk>/', open_report, name='test_open_report_business'),
     
-    path('get_trip_detail_id/<int:pk>/', TripDetailIdAV.as_view(), name='get_trip_detail_id'),
+    path('chkIn_TripDetailID/<int:pk>/<int:chkIn>/', TripDetailChkIn.as_view(), name='chkIn_TripDetailID'),
 ]

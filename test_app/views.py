@@ -41,30 +41,33 @@ from trip_app.models import Trip, TripDetail
 from rest_framework import status
 
 
-class TripDetailIdAV(APIView):
-    serializer_class = TripDetailSerializer
+class TripDetailChkIn(APIView):
 
-    def get(self, request, pk):
+    def put(self, request, pk, chkIn):
+        sql = ""
         try:
-            trip = TripDetail.objects.get(id=pk)
-        except TripDetail.DoesNotExist:
-            return Response({'error': 'TripDetail not found'}, status=status.HTTP_404_NOT_FOUND)
-        serializer = TripDetailSerializer(trip)
-        return Response(serializer.data)
+            sql = f"""
+                UPDATE PLANTRIPDB.TripDetail
+                SET chkIn = False
+                WHERE id = {pk}
+                ;
+            """
+            if chkIn == 1 :
+                 sql = f"""
+                    UPDATE PLANTRIPDB.TripDetail
+                    SET chkIn = True
+                    WHERE id = {pk}
+                    ;
+                """
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+                print("update chkIn pk: " + str(pk))
+        except Exception as e:
+            print("Error update chkIn pk: " + str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
-    def put(self, request, pk):
-        trip = TripDetail.objects.get(id=pk)
-        serializer = TripDetailSerializer(trip, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk):
-        trip = TripDetail.objects.get(id=pk)
-        trip.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        print("Success! update chkIn pk")
+        return Response(status=status.HTTP_200_OK)
 
 
 def getListTripUserAndPic1(request, username):
