@@ -23,11 +23,11 @@ urlpatterns = [
     
     path('trip-user-id/<int:id>/', TripUserIdViewAV.as_view(), name='tripUserIdView'),
     
-    path('trip-detail-all/', TripDetialPlaceViewAV.as_view(), name='tripDetailPlaceView-all'),
+    path('trip-detail-all/', TripDetialViewGetPostAV.as_view(), name='tripDetailPlaceView-all'),
     
     path('trip-detail-all-join/', get_list_trip_detail, name='tripDetailPlaceView-all'),
     path('trip-detail-all-join/<int:pk>/', get_list_trip_user_detail, name='tripDetailPlaceView-all'),
     
-    path('trip-detail/', TripDetialPlaceViewAV.as_view(), name='tripDetaiPlacelView'),
-    path('trip-detail/<int:id>/', TripDetailPlacelViewAV.as_view(), name='tripDetailPlaceView'),
+    path('trip-detail/', TripDetialViewGetPostAV.as_view(), name='tripDetaiPlacelView'),
+    path('trip-detail/<int:id>/', TripDetailViewGetPutDeleteAV.as_view(), name='tripDetailPlaceView'),
 ]

@@ -333,7 +333,7 @@ def get_trip_user(request, pk):
 
     return response
 
-class TripDetialPlaceViewAV(APIView):
+class TripDetialViewGetPostAV(APIView):
 
     def get(self, request):
         
@@ -348,7 +348,7 @@ class TripDetialPlaceViewAV(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)   
 
-class TripDetailPlacelViewAV(APIView):
+class TripDetailViewGetPutDeleteAV(APIView):
     
     serializer_class = TripDetailSerializer
 
