@@ -10,8 +10,6 @@ class TripSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class TripDetailSerializer(serializers.ModelSerializer):
-
-    tripDetailAll = TripSerializer(many=True, read_only=True)
     
     class Meta:
         model = TripDetail

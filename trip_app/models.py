@@ -33,9 +33,9 @@ class TripDetail(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name="tripAllDetail")
     chkIn = models.BooleanField(default=False)
     
-    date = models.DateField(null=True, blank=True)
-    no_sch = models.IntegerField(null=True, blank=True)
-    budget = models.FloatField(null=True, blank=True)
+    # date = models.DateField(null=True, blank=True)
+    # no_sch = models.IntegerField(null=True, blank=True)
+    # budget = models.FloatField(null=True, blank=True)
     
     # created_datetime = models.DateTimeField(auto_now_add=True)
     # change_datetime = models.DateTimeField(default=datetime.datetime.now())

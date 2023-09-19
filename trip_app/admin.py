@@ -22,8 +22,8 @@ class TripAdmin(admin.ModelAdmin):
     
 class TripDetailAdmin(admin.ModelAdmin):
     
-    list_filter = ('trip__name', 'trip__user__username', 'chkIn', 'date', 'budget', 'place__name') 
-    search_fields = ['trip__name', 'trip__user__username', 'chkIn', 'date', 'budget', 'place__name']
+    list_filter = ('trip__name', 'trip__user__username', 'chkIn', 'place__name') 
+    search_fields = ['trip__name', 'trip__user__username', 'chkIn', 'place__name']
     
 admin.site.register(Trip, TripAdmin)
 admin.site.register(TripDetail, TripDetailAdmin)
