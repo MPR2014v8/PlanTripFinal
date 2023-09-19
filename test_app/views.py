@@ -69,15 +69,15 @@ class TripDetailChkIn(APIView):
         print("Success! update chkIn pk")
         return Response(status=status.HTTP_200_OK)
     
-    def delete(self, request, pk):
-        sql = ""
+    def delete(self, request, pk, chkIn):
         try:
-            sql = f"""
-                DELETE FROM PLANTRIPDB.TripDetail
-                WHERE id = {pk}
-                ;
-            """
+
             with connection.cursor() as cursor:
+                sql = f"""
+                    DELETE FROM PLANTRIPDB.TripDetail
+                    WHERE id = {pk}
+                    ;
+                """
                 cursor.execute(sql)
                 print("delete chkIn pk: " + str(pk))
         except Exception as e:
