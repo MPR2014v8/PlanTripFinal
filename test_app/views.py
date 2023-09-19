@@ -43,6 +43,13 @@ from rest_framework import status
 class TripDetailUpdateDeleteAV(APIView):
 
     def put(self, request, pk, name, detail, position_start, position_end, budget, permission, username, date_end, date_start):
+        
+        bg = 0.0
+        try:
+            bg = float(budget)
+        except ValueError:
+            bg = 0.0
+        
         user = User.objects.get(username=username)
         user_id = user.id
         try:
@@ -53,7 +60,7 @@ class TripDetailUpdateDeleteAV(APIView):
                     detail = "{detail}",
                     position_start = "{position_start}",
                     position_end = "{position_end}",
-                    budget = {budget},
+                    budget = {bg},
                     permission = {permission},
                     user_id = {user_id},
                     date_end = "{date_end}",
