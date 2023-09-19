@@ -50,4 +50,5 @@ urlpatterns = [
     path('report_business/<int:pk>/', open_report, name='test_open_report_business'),
     
     path('chkIn_TripDetailID/<int:pk>/<int:chkIn>/', TripDetailChkIn.as_view(), name='chkIn_TripDetailID'),
+    path('chkIn_place_in_trip/<int:trip_id>/<int:place_id>/', chkPlaceInTrip, name='chkIn_place_in_trip'),
 ]

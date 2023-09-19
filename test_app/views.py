@@ -41,6 +41,38 @@ from trip_app.models import Trip, TripDetail
 from rest_framework import status
 
 
+def chkPlaceInTrip(request, trip_id, place_id):
+    data_list = []
+    try:
+        with connection.cursor() as cursor:
+            sql = f"""
+                SELECT  *
+                FROM PLANTRIPDB.TripDetail 
+                where trip_id = {trip_id} and place_id = {place_id}
+                ;
+            """
+            cursor.execute(sql)
+            data_read = cursor.fetchall()
+
+            if len(data_read) == 0:
+                data_list.append({
+                    "found": "0",
+                })
+            else:
+                data_list.append({
+                    "found": "1",
+                })
+            print("chkPlaceInTrip found: ")
+    except Exception as e:
+        print("Error chkPlaceInTrip not found: " + str(e))
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
+
 class TripDetailChkIn(APIView):
 
     def put(self, request, pk, chkIn):
@@ -52,8 +84,8 @@ class TripDetailChkIn(APIView):
                 WHERE id = {pk}
                 ;
             """
-            if chkIn == 1 :
-                 sql = f"""
+            if chkIn == 1:
+                sql = f"""
                     UPDATE PLANTRIPDB.TripDetail
                     SET chkIn = True
                     WHERE id = {pk}
@@ -68,7 +100,7 @@ class TripDetailChkIn(APIView):
 
         print("Success! update chkIn pk")
         return Response(status=status.HTTP_200_OK)
-    
+
     def delete(self, request, pk, chkIn):
         try:
 
