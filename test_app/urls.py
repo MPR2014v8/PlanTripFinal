@@ -52,9 +52,10 @@ urlpatterns = [
     path('chkIn_TripDetailID/<int:pk>/<int:chkIn>/', TripDetailChkIn.as_view(), name='chkIn_TripDetailID'),
     path('chkIn_place_in_trip/<int:trip_id>/<int:place_id>/', chkPlaceInTrip, name='chkIn_place_in_trip'),
     
+    path('delete_trip/<int:pk>/', TripDeleteAV.as_view(), name='delete_trip'),
     path(
         'update_trip_detail/<int:pk>/<str:name>/<str:detail>/<str:position_start>/<str:position_end>/<path:budget>/<int:permission>/<str:username>/<str:date_end>/<str:date_start>/', 
-         TripDetailUpdateDeleteAV.as_view(), 
+         TripDetailUpdateAV.as_view(), 
          name='update_trip_detail'
     ),
 ]

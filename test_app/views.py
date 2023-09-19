@@ -40,7 +40,27 @@ from trip_app.api.serializers import TripDetailSerializer
 from trip_app.models import Trip, TripDetail
 from rest_framework import status
 
-class TripDetailUpdateDeleteAV(APIView):
+class TripDeleteAV(APIView):
+
+    def delete(self, request, pk):
+        try:
+
+            with connection.cursor() as cursor:
+                sql = f"""
+                    DELETE FROM PLANTRIPDB.Trip
+                    WHERE id = {pk}
+                    ;
+                """
+                cursor.execute(sql)
+                print("delete Trip pk: " + str(pk))
+        except Exception as e:
+            print("Error delete Trip pk: " + str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        print("Success! delete Trip pk")
+        return Response(status=status.HTTP_200_OK)
+
+class TripDetailUpdateAV(APIView):
 
     def put(self, request, pk, name, detail, position_start, position_end, budget, permission, username, date_end, date_start):
         
