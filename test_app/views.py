@@ -68,6 +68,24 @@ class TripDetailChkIn(APIView):
 
         print("Success! update chkIn pk")
         return Response(status=status.HTTP_200_OK)
+    
+    def delete(self, request, pk):
+        sql = ""
+        try:
+            sql = f"""
+                DELETE FROM PLANTRIPDB.TripDetail
+                WHERE id = {pk}
+                ;
+            """
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+                print("delete chkIn pk: " + str(pk))
+        except Exception as e:
+            print("Error delete chkIn pk: " + str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        print("Success! delete chkIn pk")
+        return Response(status=status.HTTP_200_OK)
 
 
 def getListTripUserAndPic1(request, username):
