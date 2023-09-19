@@ -35,9 +35,37 @@ from django.urls import reverse_lazy
 import googlemaps
 
 from rest_framework.views import APIView
+from trip_app.api.serializers import TripDetailSerializer
 
-from trip_app.models import Trip
+from trip_app.models import Trip, TripDetail
 from rest_framework import status
+
+
+class TripDetailIdAV(APIView):
+    serializer_class = TripDetailSerializer
+
+    def get(self, request, pk):
+        try:
+            trip = TripDetail.objects.get(id=pk)
+        except TripDetail.DoesNotExist:
+            return Response({'error': 'TripDetail not found'}, status=status.HTTP_404_NOT_FOUND)
+        serializer = TripDetailSerializer(trip)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        trip = TripDetail.objects.get(id=pk)
+        serializer = TripDetailSerializer(trip, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        trip = TripDetail.objects.get(id=pk)
+        trip.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 def getListTripUserAndPic1(request, username):
     data_list = []
@@ -85,6 +113,7 @@ def getListTripUserAndPic1(request, username):
 
     return response
 
+
 def getListRacPlace(request, pk):
     data_list = []
 
@@ -118,15 +147,16 @@ def getListRacPlace(request, pk):
 
     return response
 
+
 class TripCloneViewAV(APIView):
-    
+
     def post(self, request, name, detail, position_start, position_end, budget, date_start, date_end, pkClone, username):
         bg = 0.0
         try:
             bg = float(budget)
         except ValueError:
             bg = 0.0
-            
+
         try:
             newTrip = Trip(
                 name=name,
@@ -148,7 +178,7 @@ class TripCloneViewAV(APIView):
 
         print("Success! saving trip clone")
         return Response(status=status.HTTP_201_CREATED)
-    
+
 
 def addTripClone(request, name, detail, position_start, position_end, budget, date_start, date_end, pkClone, username):
 
@@ -157,7 +187,7 @@ def addTripClone(request, name, detail, position_start, position_end, budget, da
         bg = float(budget)
     except ValueError:
         bg = 0.0
-        
+
     try:
         newTrip = Trip(
             name=name,
@@ -176,6 +206,7 @@ def addTripClone(request, name, detail, position_start, position_end, budget, da
         print("Error saving trip clone: " + str(e))
 
     print("Success! saving trip clone")
+
 
 def addTripCloneDetail(request, pkMain, pkClone):
     data_list_clone = []
@@ -212,12 +243,13 @@ def addTripCloneDetail(request, pkMain, pkClone):
         print("Error addTripDetailClone: " + str(e))
 
     print("Success addTripDetailClone.")
-    
+
     json_data = json.dumps(data_list_clone, ensure_ascii=False).encode('utf-8')
     response = HttpResponse(
         json_data, content_type='application/json; charset=utf-8')
 
     return response
+
 
 def getListTripDetailClone(request, pk):
     data_list = []
@@ -732,8 +764,8 @@ def get_list_place_with_distance2(request, pk, lat, lng, username):
         lng = float(lng)
         lat_start_position = lat
         lng_start_position = lng
-        
-        if lat == 0.0 or lng == 0.0 :
+
+        if lat == 0.0 or lng == 0.0:
             lat_start_position = p['start_lat']
             lng_start_position = p['start_lng']
     except ValueError as e:

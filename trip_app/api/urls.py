@@ -19,8 +19,6 @@ urlpatterns = [
     
     path('trip-user-id/<int:id>/', TripUserIdViewAV.as_view(), name='tripUserIdView'),
     
-    path('trip-detail-all/', TripDetialViewGetPostAV.as_view(), name='tripDetailPlaceView-all'),
-    
     path('trip-detail-all-join/', get_list_trip_detail, name='tripDetailPlaceView-all'),
     path('trip-detail-all-join/<int:pk>/', get_list_trip_user_detail, name='tripDetailPlaceView-all'),
     
