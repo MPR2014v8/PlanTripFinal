@@ -394,7 +394,7 @@ class TripDetailPlacelViewAV(APIView):
     
     serializer_class = TripDetailSerializer
 
-    def get(self, request, id):
+    def get(self, id):
         try:
             trip = TripDetail.objects.get(id=id)
         except TripDetail.DoesNotExist :
@@ -411,7 +411,7 @@ class TripDetailPlacelViewAV(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, id):
+    def delete(self, id):
         trip = TripDetail.objects.get(id=id)
         trip.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
