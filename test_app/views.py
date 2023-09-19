@@ -44,14 +44,15 @@ class TripDeleteAV(APIView):
 
     def delete(self, request, pk):
         try:
-
             with connection.cursor() as cursor:
+                cursor.execute("SET FOREIGN_KEY_CHECKS=0;")
                 sql = f"""
                     DELETE FROM PLANTRIPDB.Trip
                     WHERE id = {pk}
                     ;
                 """
                 cursor.execute(sql)
+                cursor.execute("SET FOREIGN_KEY_CHECKS=1;")
                 print("delete Trip pk: " + str(pk))
         except Exception as e:
             print("Error delete Trip pk: " + str(e))

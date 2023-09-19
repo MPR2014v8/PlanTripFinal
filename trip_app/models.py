@@ -47,8 +47,8 @@ class TripDetail(models.Model):
         return str(self.place.name) + " | " + str(self.trip.name) + " | "
 
 class TripClone(models.Model):
-    tripMain = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name="tripMain")
-    tripClone = models.ForeignKey(Trip, on_delete=models.CASCADE, related_name="tripClone")
+    tripMain = models.ForeignKey(Trip, on_delete=models.SET_NULL, related_name="tripMain", null=True, blank=True)
+    tripClone = models.ForeignKey(Trip, on_delete=models.SET_NULL, related_name="tripClone", null=True, blank=True)
     date_create = models.DateField(null=True, blank=True, auto_created=True, default=datetime.datetime.now())
     
     class Meta:
