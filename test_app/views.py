@@ -40,6 +40,55 @@ from trip_app.api.serializers import TripDetailSerializer
 from trip_app.models import Trip, TripDetail
 from rest_framework import status
 
+class TripDetailUpdateDeleteAV(APIView):
+
+    def put(self, request, pk, name, detail, position_start, position_end, budget, permission, username, date_end, date_start):
+        user = User.objects.get(username=username)
+        user_id = user.id
+        try:
+            sql = f"""
+                UPDATE PLANTRIPDB.Trip
+                SET 
+                    name = "{name}",
+                    detail = "{detail}",
+                    position_start = "{position_start}",
+                    position_end = "{position_end}",
+                    budget = {budget},
+                    permission = {permission},
+                    user_id = {user_id},
+                    date_end = "{date_end}",
+                    date_start = "{date_start}"
+                WHERE id = {pk}
+                ;
+            """
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+                print("update TripDetail pk: " + str(pk))
+        except Exception as e:
+            print("Error update TripDetail pk: " + str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        print("Success! update TripDetail pk")
+        return Response(status=status.HTTP_200_OK)
+
+    def delete(self, request, pk, name, detail, position_start, position_end, budget, permission, username, date_end, date_start):
+        try:
+
+            with connection.cursor() as cursor:
+                sql = f"""
+                    DELETE FROM PLANTRIPDB.Trip
+                    WHERE id = {pk}
+                    ;
+                """
+                cursor.execute(sql)
+                print("delete Trip pk: " + str(pk))
+        except Exception as e:
+            print("Error delete Trip pk: " + str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        print("Success! delete Trip pk")
+        return Response(status=status.HTTP_200_OK)
+
 
 def chkPlaceInTrip(request, trip_id, place_id):
     data_list = []
