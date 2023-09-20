@@ -54,6 +54,7 @@ urlpatterns = [
     path('chkIn_trip_detail/<int:pk>/', chkTripDetail, name='chkIn_trip_detail'),
     
     path('delete_trip/<int:pk>/', TripDeleteAV.as_view(), name='delete_trip'),
+    path('add_rac_place/<int:score>/<str:comment>/<int:place_id>/<str:username>/', RacPlaceAV.as_view(), name='add_rac_place'),
     path(
         'update_trip_detail/<int:pk>/<str:name>/<str:detail>/<str:position_start>/<str:position_end>/<path:budget>/<int:permission>/<str:username>/<str:date_end>/<str:date_start>/', 
          TripDetailUpdateAV.as_view(), 

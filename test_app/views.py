@@ -40,6 +40,30 @@ from trip_app.api.serializers import TripDetailSerializer
 from trip_app.models import Trip, TripDetail
 from rest_framework import status
 
+
+class RacPlaceAV(APIView):
+
+    def post(self, request, score, comment, place_id, username):
+
+        user = User.objects.get(username=username)
+        user_id = user.id
+        try:
+            sql = f"""
+                insert into PLANTRIPDB.RatingAndComment (score, comment, place_id, user_id)
+                value ({score},"{comment}",{place_id},{user_id})
+                ;
+            """
+            with connection.cursor() as cursor:
+                cursor.execute(sql)
+                print("insert rac pk:")
+        except Exception as e:
+            print("Error insert rac pk: " + str(e))
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        print("Success! insert rac pk")
+        return Response(status=status.HTTP_200_OK)
+
+
 def chkTripDetail(request, pk):
     data_list = []
     try:
@@ -71,6 +95,7 @@ def chkTripDetail(request, pk):
 
     return response
 
+
 class TripDeleteAV(APIView):
 
     def delete(self, request, pk):
@@ -92,16 +117,17 @@ class TripDeleteAV(APIView):
         print("Success! delete Trip pk")
         return Response(status=status.HTTP_200_OK)
 
+
 class TripDetailUpdateAV(APIView):
 
     def put(self, request, pk, name, detail, position_start, position_end, budget, permission, username, date_end, date_start):
-        
+
         bg = 0.0
         try:
             bg = float(budget)
         except ValueError:
             bg = 0.0
-        
+
         user = User.objects.get(username=username)
         user_id = user.id
         try:
