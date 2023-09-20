@@ -281,12 +281,14 @@ def getListRacPlace(request, pk):
     with connection.cursor() as cursor:
         sql = f"""
             SELECT  
-                id,
+                rac.id,
                 score,
                 comment,
                 place_id as place,
-                user_id as user
-            FROM PLANTRIPDB.RatingAndComment
+                user_id as user,
+                username
+            FROM PLANTRIPDB.RatingAndComment as rac
+            inner join PLANTRIPDB.auth_user as au on rac.user_id = au.id
             where place_id = {pk}
             ;
         """
@@ -300,6 +302,7 @@ def getListRacPlace(request, pk):
             "comment": str(row[2]),
             "place": str(row[3]),
             "user": str(row[4]),
+            "username": str(row[-1]),
         })
 
     json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
