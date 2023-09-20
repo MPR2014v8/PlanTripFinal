@@ -429,6 +429,14 @@ def addTripCloneDetail(request, pkMain, pkClone):
                     ;
                 """
                 cursor.execute(sql)
+                
+                
+            sql = f"""
+                    insert into PLANTRIPDB.TripClone (tripClone_id, tripMain_id)
+                    value ({pkClone}, {pkMain})
+                    ;
+                """
+            cursor.execute(sql)
     except Exception as e:
         print("Error addTripDetailClone: " + str(e))
 
