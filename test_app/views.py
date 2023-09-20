@@ -40,6 +40,37 @@ from trip_app.api.serializers import TripDetailSerializer
 from trip_app.models import Trip, TripDetail
 from rest_framework import status
 
+def chkTripDetail(request, pk):
+    data_list = []
+    try:
+        with connection.cursor() as cursor:
+            sql = f"""
+                SELECT  *
+                FROM PLANTRIPDB.TripDetail 
+                where trip_id = {pk}
+                ;
+            """
+            cursor.execute(sql)
+            data_read = cursor.fetchall()
+
+            if len(data_read) == 0:
+                data_list.append({
+                    "found": "0",
+                })
+            else:
+                data_list.append({
+                    "found": "1",
+                })
+            print("chkTripDetail found: ")
+    except Exception as e:
+        print("Error chkTripDetail not found: " + str(e))
+
+    json_data = json.dumps(data_list, ensure_ascii=False).encode('utf-8')
+    response = HttpResponse(
+        json_data, content_type='application/json; charset=utf-8')
+
+    return response
+
 class TripDeleteAV(APIView):
 
     def delete(self, request, pk):

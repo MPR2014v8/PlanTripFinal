@@ -51,6 +51,7 @@ urlpatterns = [
     
     path('chkIn_TripDetailID/<int:pk>/<int:chkIn>/', TripDetailChkIn.as_view(), name='chkIn_TripDetailID'),
     path('chkIn_place_in_trip/<int:trip_id>/<int:place_id>/', chkPlaceInTrip, name='chkIn_place_in_trip'),
+    path('chkIn_trip_detail/<int:pk>/', chkTripDetail, name='chkIn_trip_detail'),
     
     path('delete_trip/<int:pk>/', TripDeleteAV.as_view(), name='delete_trip'),
     path(
