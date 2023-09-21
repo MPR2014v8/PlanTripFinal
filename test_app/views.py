@@ -1369,18 +1369,20 @@ def getCountUsePlace(request):
 def index(request):
     place_use = getCountUsePlace(request)
     place_score = getScorePlace(request)
+    username = request.user.username
+    
     if request.method == 'POST':
         search_query = request.POST['search_query']
         print("search=", search_query)
         places = BusinessPlace.objects.filter(name__contains=search_query)
         if place_score == [] or None:
             return render(request, "index.html",
-                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
+                          {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1], 'username': username
                            })
         else:
             return render(request, "index.html",
                           {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
-                           'place_score': place_score[0], "place_score_nagative": place_score[-1]
+                           'place_score': place_score[0], "place_score_nagative": place_score[-1], 'username': username
                            })
     else:
         user_id = request.user.id
@@ -1491,11 +1493,13 @@ def index_admin(request):
     countPayment = getCountPayment(request)
     countPaymentIsNCheck = getCountPaymentIsNCheck(request)
     countPaymentIsCheck = getCountPaymentIsCheck(request)
+    username = request.user.username
     context = {
         'totalPaymentValid': totalPaymentValid['total_payment_valid'],
         'countPaymentValid': countPayment['count_payment'],
         'countPaymentIsCheck': countPaymentIsCheck['count_payment_is_check'],
-        'countPaymentIsNCheck': countPaymentIsNCheck['count_payment_isn_check']
+        'countPaymentIsNCheck': countPaymentIsNCheck['count_payment_isn_check'],
+        'username': username
     }
     return render(request, 'index_admin.html', context)
 

@@ -85,7 +85,8 @@ class RatingAndCommentAdmin(admin.ModelAdmin):
 
 admin.site.register(BusinessPlace, BusinessPlaceAdmin)
 admin.site.register(BusinessType)
-admin.site.register(BusinessPlacePicture, BusinessPlacePictureAdmin)
-admin.site.register(VirtualTour, VirtualTourAdmin)
 admin.site.register(RatingAndComment, RatingAndCommentAdmin)
+
+# admin.site.register(BusinessPlacePicture, BusinessPlacePictureAdmin)
+# admin.site.register(VirtualTour, VirtualTourAdmin)
 # admin.site.register(checkInLocationPlace, checkInLocationPlaceAdmin)
