@@ -429,8 +429,7 @@ def addTripCloneDetail(request, pkMain, pkClone):
                     ;
                 """
                 cursor.execute(sql)
-                
-                
+
             sql = f"""
                     insert into PLANTRIPDB.TripClone (tripClone_id, tripMain_id)
                     value ({pkClone}, {pkMain})
@@ -862,6 +861,12 @@ def report(request):
         search_query = request.POST['search_query']
         print("search=", search_query)
         places = BusinessPlace.objects.filter(name__contains=search_query)
+        
+        if place_score == [] or None or place_use == [] or None:
+            return render(request, "report_business.html",
+                          {'places': places, 'place_use': [], "place_use_nagative": [],
+                           })
+        
         if place_score == [] or None:
             return render(request, "report_business.html",
                           {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
@@ -882,6 +887,12 @@ def report(request):
             page_obj = p.page(1)
         except EmptyPage:
             page_obj = p.page(p.num_pages)
+            
+        if place_score == [] or None or place_use == [] or None:
+            return render(request, "report_business.html",
+                            {'places': places, 'place_use': [], "place_use_nagative": [],
+                            })
+            
         if place_score == [] or None:
             return render(request, "report_business.html",
                           {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
@@ -1370,11 +1381,17 @@ def index(request):
     place_use = getCountUsePlace(request)
     place_score = getScorePlace(request)
     username = request.user.username
-    
+
     if request.method == 'POST':
         search_query = request.POST['search_query']
         print("search=", search_query)
         places = BusinessPlace.objects.filter(name__contains=search_query)
+
+        if place_use == [] or None or place_score == [] or None:
+            return render(request, "index.html",
+                          {'places': places, 'place_use': [], "place_use_nagative": [], 'username': username
+                           })
+
         if place_score == [] or None:
             return render(request, "index.html",
                           {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1], 'username': username
@@ -1395,6 +1412,12 @@ def index(request):
             page_obj = p.page(1)
         except EmptyPage:
             page_obj = p.page(p.num_pages)
+
+        if place_use == [] or None or place_score == [] or None:
+            return render(request, "index.html",
+                          {'places': places, 'place_use': [], "place_use_nagative": [], 'username': username
+                           })
+
         if place_score == [] or None:
             return render(request, "index.html",
                           {'places': places, 'place_use': place_use[0], "place_use_nagative": place_use[-1],
